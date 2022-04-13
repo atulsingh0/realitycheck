@@ -31,6 +31,7 @@ basic_docker_build: &basic_docker_build
     echo "FROM alpine:latest" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
     docker network ls
+    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
     ip route
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
