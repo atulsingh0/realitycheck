@@ -14,6 +14,13 @@ resource_job_defaults: &resource_job_defaults
             exit 1
           fi
     - run:
+        name: verify required Proxy Environment Variables
+        command: |
+          if [ -z "${HTTP_PROXY}" -o -z "${HTTPS_PROXY}" ];then
+            echo "You must provide 2 Environment Variables in project settings for vm/docker job to run - HTTP_PROXY & HTTPS_PROXY"
+            exit 1
+          fi          
+    - run:
         name: verify that job ran with the requested resource_class option
         command: |
           curl -k \
