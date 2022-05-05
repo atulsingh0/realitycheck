@@ -27,6 +27,7 @@ remote_docker_defaults: &remote_docker_defaults
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
   command: |
+    hostname
     dockerfile=Dockerfile
     echo "FROM alpine:latest" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
@@ -74,6 +75,7 @@ jobs:
           <<: *basic_docker_build
       - run: |
           echo $SLEEP
+          hostname
           date
           sleep $SLEEP
           date
@@ -86,6 +88,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: hostname
       - setup_remote_docker
       - run:
           <<: *basic_docker_build
@@ -96,6 +99,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: hostname
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -108,6 +112,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: hostname
       - run:
           <<: *basic_docker_build
       - run: docker version
