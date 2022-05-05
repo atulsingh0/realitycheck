@@ -34,6 +34,7 @@ remote_docker_defaults: &remote_docker_defaults
 include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
   command: |
+    mkdir -p ~/.docker
     cat <<EOF > ~/.docker/config.json
     {
     "proxies":
