@@ -34,7 +34,7 @@ remote_docker_defaults: &remote_docker_defaults
 include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
   command: |
-    sudo mkdir /etc/systemd/system/docker.service.d
+    sudo mkdir -p /etc/systemd/system/docker.service.d
     sudo bash -c 'echo [Service] > /etc/systemd/system/docker.service.d/http-proxy.conf'
     sudo bash -c 'echo Environment=\"HTTP_PROXY=http://proxy.atul-proxy.internal:3128/\" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
     sudo bash -c 'echo Environment=\"HTTPS_PROXY=http://proxy.atul-proxy.internal:3128/\" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
