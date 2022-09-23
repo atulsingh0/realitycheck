@@ -247,11 +247,13 @@ jobs:
     <<: *contexts_defaults
     steps:
       - run: env | grep CONTEXT_END_TO_END_TEST_VAR
+      - run: env
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
       - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
+      - run: env
 
   write_workspace:
     <<: *workspaces_defaults
