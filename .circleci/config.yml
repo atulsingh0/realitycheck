@@ -87,7 +87,7 @@ contexts_defaults: &contexts_defaults
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
-  docker: [{image: 'circleci/node:latest'}]
+  docker: [{image: 'cimg/node:latest'}]
   working_directory: ~/foo/bar
 
 jobs:
@@ -281,7 +281,7 @@ jobs:
 
   save_and_restore_cache:
     docker:
-      - image: circleci/python
+      - image: cimg/python
     working_directory: ~/realitycheck
     steps:
       - checkout
