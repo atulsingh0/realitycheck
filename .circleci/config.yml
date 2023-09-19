@@ -87,13 +87,7 @@ contexts_defaults: &contexts_defaults
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
-<<<<<<< HEAD
-  docker: [{image: 'cimg/node:current'}]
-||||||| parent of 6dc422e (Update config.yml)
-  docker: [{image: 'circleci/node:latest'}]
-=======
-  docker: [{image: 'cimg/node:latest'}]
->>>>>>> 6dc422e (Update config.yml)
+  docker: [{image: 'cimg/node:edge'}]
   working_directory: ~/foo/bar
 
 jobs:
@@ -287,13 +281,7 @@ jobs:
 
   save_and_restore_cache:
     docker:
-<<<<<<< HEAD
-      - image: cimg/python:3.10
-||||||| parent of 6dc422e (Update config.yml)
-      - image: circleci/python
-=======
       - image: cimg/python
->>>>>>> 6dc422e (Update config.yml)
     working_directory: ~/realitycheck
     steps:
       - checkout
