@@ -317,7 +317,10 @@ workflows:
             - write_workspace
       - artifacts_test_results
 
-  others:
+  runner-test:
+    jobs:
+      - runner
+  
+  orb-test:
     jobs:
       - orb-test
-      - runner
