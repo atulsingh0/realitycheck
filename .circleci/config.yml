@@ -1,5 +1,8 @@
 version: 2
 
+orbs:
+  shellcheck: circleci/shellcheck@3.2.0
+
 resource_job_defaults: &resource_job_defaults
   docker:
     - image: 'cimg/base:2021.02-20.04'
@@ -165,7 +168,6 @@ jobs:
       - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
       - run: echo $CONTEXT_END_TO_END_TEST_VAR
 
-
   write_workspace:
     <<: *workspaces_defaults
     steps:
@@ -261,6 +263,21 @@ jobs:
       - store_test_results:
           path: test-results
 
+  # ShellCheck Orb job
+  orb-test: # 1 vCPU, 2GB RAM
+    resource_class: small
+    docker:
+      - image: 'cimg/base:2021.02-20.04'
+    steps:
+      - run:
+          name: Creating a dummy script file
+          command: |
+            echo 'echo this is a test' > ./myScripts/test.sh
+      - shellcheck/check:
+          dir: ./myScripts
+          exclude: SC2148
+          
+    
 workflows:
   version: 2
   resource_class_jobs:
@@ -291,4 +308,6 @@ workflows:
             - write_workspace
       - artifacts_test_results
 
-
+  others:
+    jobs:
+      -  orb-test
