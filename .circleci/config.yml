@@ -265,19 +265,17 @@ jobs:
 
   # ShellCheck Orb job
   orb-test: # 1 vCPU, 2GB RAM
-    resource_class: small
     docker:
-      - image: 'cimg/base:2021.02-20.04'
+      - image: cimg/base:stable
     steps:
       - checkout
       - shellcheck/install
-      - run:
-          name: Creating a dummy script file
-          command: |
-            echo 'echo this is a test' > test.sh
-      - run:
-          command: shellcheck test.sh
-          name: Run Shellcheck command    
+    - run:
+        name: Creating a dummy script file
+        command: echo 'echo this is a test' > test.sh
+    - run:
+        command: shellcheck test.sh
+        name: Run Shellcheck command         
           
     
 workflows:
