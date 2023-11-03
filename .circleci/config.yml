@@ -77,7 +77,7 @@ jobs:
   # ShellCheck Orb job
   orb-test: # 1 vCPU, 2GB RAM
     docker:
-      - image: cimg/base:stable
+      - image: "cimg/base:stable"
     steps:
       - checkout
       - shellcheck/install
