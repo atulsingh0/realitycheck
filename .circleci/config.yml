@@ -281,7 +281,6 @@ jobs:
       - image: cimg/base:2021.11
     resource_class: atul/test
     steps:
-      - checkout
       - run:
           <<: *include_proxy_env      
       - run: echo "Hi I'm on Runners!"
