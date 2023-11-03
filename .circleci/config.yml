@@ -269,13 +269,15 @@ jobs:
     docker:
       - image: 'cimg/base:2021.02-20.04'
     steps:
+      - checkout
+      - shellcheck/install
       - run:
           name: Creating a dummy script file
           command: |
-            echo 'echo this is a test' > ./myScripts/test.sh
-      - shellcheck/check:
-          dir: ./myScripts
-          exclude: SC2148
+            echo 'echo this is a test' > test.sh
+      - run:
+          command: shellcheck test.sh
+          name: Run Shellcheck command    
           
     
 workflows:
