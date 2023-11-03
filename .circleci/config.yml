@@ -74,6 +74,20 @@ workspaces_defaults: &workspaces_defaults
   working_directory: ~/foo/bar
 
 jobs:
+  # ShellCheck Orb job
+  orb-test: # 1 vCPU, 2GB RAM
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - shellcheck/install
+    - run:
+        name: Creating a dummy script file
+        command: echo 'echo this is a test' > test.sh
+    - run:
+        command: shellcheck test.sh
+        name: Run Shellcheck command
+        
   # resource class jobs
   small: # 1 vCPU, 2GB RAM
     <<: *resource_job_defaults
@@ -262,20 +276,6 @@ jobs:
 
       - store_test_results:
           path: test-results
-
-  # ShellCheck Orb job
-  orb-test: # 1 vCPU, 2GB RAM
-    docker:
-      - image: cimg/base:stable
-    steps:
-      - checkout
-      - shellcheck/install
-    - run:
-        name: Creating a dummy script file
-        command: echo 'echo this is a test' > test.sh
-    - run:
-        command: shellcheck test.sh
-        name: Run Shellcheck command         
           
     
 workflows:
