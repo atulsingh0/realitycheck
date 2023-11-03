@@ -275,6 +275,14 @@ jobs:
 
       - store_test_results:
           path: test-results
+
+  runner:
+    docker:
+      - image: cimg/base:2021.11
+    resource_class: atul/test
+    steps:
+      - checkout
+      - run: echo "Hi I'm on Runners!"
           
     
 workflows:
@@ -309,4 +317,5 @@ workflows:
 
   others:
     jobs:
-      -  orb-test
+      - orb-test
+      - runner
