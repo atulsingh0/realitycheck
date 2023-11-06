@@ -86,7 +86,6 @@ jobs:
           <<: *include_proxy_env 
       - jq/install:
           version: jq-1.7
-      - run: jq version
       
   # resource class jobs
   small: # 1 vCPU, 2GB RAM
@@ -124,6 +123,8 @@ jobs:
     machine: true
     resource_class: medium
     steps:
+      - run:
+          <<: *include_proxy_env 
       - run:
           <<: *basic_docker_build
       - run: |
