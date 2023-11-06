@@ -76,7 +76,8 @@ workspaces_defaults: &workspaces_defaults
 jobs:
   # jq Orb job
   orb-test: # 1 vCPU, 2GB RAM
-    <<: *remote_docker_defaults 
+    docker:
+      - image: cimg/base:2021.11  
     steps:
       - setup_remote_docker
       - run:
