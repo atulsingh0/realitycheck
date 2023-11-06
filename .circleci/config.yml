@@ -76,15 +76,7 @@ workspaces_defaults: &workspaces_defaults
 jobs:
   # jq Orb job
   orb-test: # 1 vCPU, 2GB RAM
-    <<: *remote_docker_defaults
-    steps:
-      - run: apk update && apk add sudo
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - setup_remote_docker
-      - run:
-          <<: *include_proxy_env   
+    <<: *remote_docker_defaults 
     steps:
       - setup_remote_docker
       - run:
