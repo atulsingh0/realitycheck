@@ -79,6 +79,9 @@ jobs:
     docker:
       - image: cimg/base:2021.11  
     steps:
+      - run: which docker
+      - run: docker -v
+      - run: hostname    
       - run:
         <<: *include_proxy_env 
       - jq/install:
