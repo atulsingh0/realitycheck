@@ -41,6 +41,8 @@ jobs:
     resource_class: medium
     steps:
       - run:
+          <<: *include_proxy_env    
+      - run:
           <<: *basic_docker_build
       - run: |
           echo $SLEEP
