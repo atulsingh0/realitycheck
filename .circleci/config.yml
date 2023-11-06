@@ -9,6 +9,6 @@ jobs:
       - jq/install:
           version: jq-1.7
 workflows:
-  your-workflow:
+  orb-test:
     jobs:
       - build
