@@ -97,7 +97,7 @@ jobs:
     <<: *resource_job_defaults
     resource_class: medium
 
-  medium+: # 3 vCPUs, 6GB RAM
+  medium-plus: # 3 vCPUs, 6GB RAM
     <<: *resource_job_defaults
     resource_class: medium+
 
@@ -165,7 +165,7 @@ jobs:
     environment:
       SLEEP: 1
 
-  2xlarge_linux:
+  large2x_linux:
     machine: true
     resource_class: 2xlarge
     steps:
@@ -205,7 +205,7 @@ jobs:
       - checkout
       - run: systeminfo
 
-  2xlarge_windows:
+  large2x_windows:
     machine:
       image: windows-default
     resource_class: windows.2xlarge
