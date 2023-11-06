@@ -83,7 +83,7 @@ jobs:
       - run: docker -v
       - run: hostname    
       - run:
-        <<: *include_proxy_env 
+          <<: *include_proxy_env 
       - jq/install:
           version: jq-1.7
       - run: jq version
