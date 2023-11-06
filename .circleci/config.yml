@@ -94,17 +94,17 @@ jobs:
     <<: *resource_job_defaults
     resource_class: medium
 
-  # medium+: # 3 vCPUs, 6GB RAM
-  #   <<: *resource_job_defaults
-  #   resource_class: medium+
+  medium+: # 3 vCPUs, 6GB RAM
+    <<: *resource_job_defaults
+    resource_class: medium+
 
-  # large: # 4 vCPUs, 8GB RAM
-  #   <<: *resource_job_defaults
-  #   resource_class: large
+  large: # 4 vCPUs, 8GB RAM
+    <<: *resource_job_defaults
+    resource_class: large
 
-  # xlarge: # 8 vCPUs, 16GB RAM
-  #   <<: *resource_job_defaults
-  #   resource_class: xlarge
+  xlarge: # 8 vCPUs, 16GB RAM
+    <<: *resource_job_defaults
+    resource_class: xlarge
 
   # check if EC2
   run_arm_jobs_if_ec2:
@@ -132,50 +132,50 @@ jobs:
     environment:
       SLEEP: 1
   
-  # large_linux:
-  #   machine: true
-  #   resource_class: large
-  #   steps:
-  #     - run:
-  #         <<: *basic_docker_build
-  #     - run: |
-  #         echo $SLEEP
-  #         date
-  #         sleep $SLEEP
-  #         date
-  #         echo 'Done sleeping.'
-  #   environment:
-  #     SLEEP: 1
+  large_linux:
+    machine: true
+    resource_class: large
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
 
-  # xlarge_linux:
-  #   machine: true
-  #   resource_class: xlarge
-  #   steps:
-  #     - run:
-  #         <<: *basic_docker_build
-  #     - run: |
-  #         echo $SLEEP
-  #         date
-  #         sleep $SLEEP
-  #         date
-  #         echo 'Done sleeping.'
-  #   environment:
-  #     SLEEP: 1
+  xlarge_linux:
+    machine: true
+    resource_class: xlarge
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
 
-  # 2xlarge_linux:
-  #   machine: true
-  #   resource_class: 2xlarge
-  #   steps:
-  #     - run:
-  #         <<: *basic_docker_build
-  #     - run: |
-  #         echo $SLEEP
-  #         date
-  #         sleep $SLEEP
-  #         date
-  #         echo 'Done sleeping.'
-  #   environment:
-  #     SLEEP: 1
+  2xlarge_linux:
+    machine: true
+    resource_class: 2xlarge
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
 
   # windows jobs
   medium_windows:
@@ -186,29 +186,29 @@ jobs:
       - checkout
       - run: systeminfo
 
-  # large_windows:
-  #   machine:
-  #     image: windows-default
-  #   resource_class: windows.large
-  #   steps:
-  #     - checkout
-  #     - run: systeminfo
+  large_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.large
+    steps:
+      - checkout
+      - run: systeminfo
 
-  # xlarge_windows:
-  #   machine:
-  #     image: windows-default
-  #   resource_class: windows.xlarge
-  #   steps:
-  #     - checkout
-  #     - run: systeminfo
+  xlarge_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.xlarge
+    steps:
+      - checkout
+      - run: systeminfo
 
-  # 2xlarge_windows:
-  #   machine:
-  #     image: windows-default
-  #   resource_class: windows.2xlarge
-  #   steps:
-  #     - checkout
-  #     - run: systeminfo
+  2xlarge_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.2xlarge
+    steps:
+      - checkout
+      - run: systeminfo
 
 
   # arm jobs
@@ -231,21 +231,21 @@ jobs:
     environment:
       SLEEP: 1
 
-  # large_arm:
-  #   machine:
-  #     image: arm-default
-  #   resource_class: arm.large
-  #   steps:
-  #     - run:
-  #         <<: *basic_docker_build
-  #     - run: |
-  #         echo $SLEEP
-  #         date
-  #         sleep $SLEEP
-  #         date
-  #         echo 'Done sleeping.'
-  #   environment:
-  #     SLEEP: 1
+  large_arm:
+    machine:
+      image: arm-default
+    resource_class: arm.large
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
 
   # vm jobs
   remote_docker:
@@ -406,17 +406,20 @@ jobs:
       - run:
           <<: *include_proxy_env      
       - run: echo "Hi I'm on Runners!"
+
           
-    
+## ========================================================================
+##                WORKFLOW
+## ========================================================================
 workflows:
   version: 2
   resource_class_jobs:
     jobs:
       - small
       - medium
-      - medium+
-      - large
-      - xlarge
+      # - medium+
+      # - large
+      # - xlarge
 
   vm_jobs:
     jobs:
@@ -440,16 +443,16 @@ workflows:
   linux_jobs:
     jobs:
       - medium_linux
-      - large_linux
-      - xlarge_linux
-      - 2xlarge_linux
+      # - large_linux
+      # - xlarge_linux
+      # - 2xlarge_linux
 
   windows_jobs:
     jobs:
       - medium_windows
-      - large_windows
-      - xlarge_windows
-      - 2xlarge_windows
+      # - large_windows
+      # - xlarge_windows
+      # - 2xlarge_windows
 
   arm_jobs:
     jobs:
