@@ -1,5 +1,8 @@
 version: 2
 
+orbs:
+  shellcheck: circleci/shellcheck@3.2.0
+
 resource_job_defaults: &resource_job_defaults
   docker:
     - image: 'cimg/base:2021.02-20.04'
@@ -14,6 +17,13 @@ resource_job_defaults: &resource_job_defaults
             exit 1
           fi
     - run:
+        name: verify required Proxy Environment Variables
+        command: |
+          if [ -z "${HTTP_PROXY}" -o -z "${HTTPS_PROXY}" ];then
+            echo "You must provide 2 Environment Variables in project settings for vm/docker job to run - HTTP_PROXY & HTTPS_PROXY"
+            exit 1
+          fi          
+    - run:
         name: verify that job ran with the requested resource_class option
         command: |
           curl -k \
@@ -24,12 +34,34 @@ resource_job_defaults: &resource_job_defaults
 remote_docker_defaults: &remote_docker_defaults
   docker: [{image: 'docker:17.06-git'}]
 
+include_proxy_env: &include_proxy_env
+  name: "Set Proxy Env"
+  command: |
+    mkdir -p ~/.docker
+    cat <<EOF > ~/.docker/config.json
+    {
+    "proxies":
+    {
+      "default":
+    {
+      "httpProxy": "http://proxy.atul-proxy.internal:3128",
+      "httpsProxy": "http://proxy.atul-proxy.internal:3128",
+      "noProxy": "10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal"
+    }
+    }
+    }
+    EOF
+
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
   command: |
+    hostname
     dockerfile=Dockerfile
     echo "FROM alpine:latest" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
+    docker network ls
+    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
+    ip route
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
@@ -42,6 +74,19 @@ workspaces_defaults: &workspaces_defaults
   working_directory: ~/foo/bar
 
 jobs:
+  # ShellCheck Orb job
+  orb-test: # 1 vCPU, 2GB RAM
+    docker: [{image: 'cimg/base:stable'}]
+    steps:
+      - checkout
+      - shellcheck/install
+      - run:
+          name: Creating a dummy script file
+          command: echo 'echo this is a test' > test.sh
+      - run:
+          command: shellcheck test.sh
+          name: Run Shellcheck command
+        
   # resource class jobs
   small: # 1 vCPU, 2GB RAM
     <<: *resource_job_defaults
@@ -95,9 +140,35 @@ jobs:
               curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
             fi
 
-  # vm jobs
-  machine:
+  # check if EC2
+  run_arm_jobs_if_ec2:
     machine: true
+    steps:
+      - run: |
+          result=$(curl http://169.254.169.254/latest/meta-data/instance-type)
+          if [[ $result == *"Not Found"* ]]; then exit 1; fi
+    environment:
+      SLEEP: 1
+
+  # linux jobs
+  medium_linux:
+    machine: true
+    resource_class: medium
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+  
+  large_linux:
+    machine: true
+    resource_class: large
     steps:
       - run:
           <<: *basic_docker_build
@@ -141,12 +212,124 @@ jobs:
     environment:
       SLEEP: 1
 
+  xlarge_linux:
+    machine: true
+    resource_class: xlarge
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+
+  2xlarge_linux:
+    machine: true
+    resource_class: 2xlarge
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+
+  # windows jobs
+  medium_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.medium
+    steps:
+      - checkout
+      - run: systeminfo
+
+  large_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.large
+    steps:
+      - checkout
+      - run: systeminfo
+
+  xlarge_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.xlarge
+    steps:
+      - checkout
+      - run: systeminfo
+
+  2xlarge_windows:
+    machine:
+      image: windows-default
+    resource_class: windows.2xlarge
+    steps:
+      - checkout
+      - run: systeminfo
+
+  windows-medium:
+    machine:
+      image: windows-default # Windows machine image
+    resource_class: windows.medium
+    steps:
+      - checkout
+      - run: systeminfo
+
+  # arm jobs
+  medium_arm:
+    machine:
+      image: arm-default
+    resource_class: arm.medium
+    steps:
+      - run:
+          <<: *include_proxy_env      
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          hostname
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+
+  large_arm:
+    machine:
+      image: arm-default
+    resource_class: arm.large
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+
+  # vm jobs
   remote_docker:
     <<: *remote_docker_defaults
     steps:
+      - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
+      - run: hostname
       - setup_remote_docker
+      - run:
+          <<: *include_proxy_env      
       - run:
           <<: *basic_docker_build
       - run: docker version
@@ -154,10 +337,14 @@ jobs:
   docker_layer_caching:
     <<: *remote_docker_defaults
     steps:
+      - run: apk update && apk add sudo    
       - run: which docker
       - run: docker -v
+      - run: hostname
       - setup_remote_docker:
           docker_layer_caching: true
+      - run:
+          <<: *include_proxy_env          
       - run:
           <<: *basic_docker_build
       - run: docker version
@@ -168,6 +355,9 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: hostname
+      - run:
+          <<: *include_proxy_env      
       - run:
           <<: *basic_docker_build
       - run: docker version
@@ -177,13 +367,13 @@ jobs:
     <<: *contexts_defaults
     steps:
       - run: env | grep CONTEXT_END_TO_END_TEST_VAR
-      - run: env
+      - run: echo "Value of CONTEXT_END_TO_END_TEST_VAR : $CONTEXT_END_TO_END_TEST_VAR"
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
       - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
-      - run: env
+      - run: echo "Value of MULTI_CONTEXT_END_TO_END_VAR : $MULTI_CONTEXT_END_TO_END_VAR"
 
   write_workspace:
     <<: *workspaces_defaults
@@ -211,11 +401,20 @@ jobs:
 
   save_and_restore_cache:
     docker:
-      - image: cimg/python
+      - image: cimg/python:3.10
     working_directory: ~/realitycheck
     steps:
+      - run: |
+         mkdir -p ~/.ssh
+         cat > config <<EOF
+         Host  github.com
+           User git
+           ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
+         EOF
+         chmod 600 config
+         mv config ~/.ssh/config
+         chmod 600 ~/.ssh
       - checkout
-
       - run: mkdir -p stuff
       - run: echo 5 >./stuff/thing
 
@@ -240,11 +439,20 @@ jobs:
 
   artifacts_test_results:
     docker:
-      - image: python:3.6.0
+      - image: cimg/python:3.10
     working_directory: ~/realitycheck
     steps:
+      - run: |
+         mkdir -p ~/.ssh
+         cat > config <<EOF
+         Host  github.com
+           User git
+           ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
+         EOF
+         chmod 600 config
+         mv config ~/.ssh/config
+         chmod 600 ~/.ssh    
       - checkout
-
       - run:
           name: Creating Dummy Artifacts
           command: |
@@ -262,6 +470,16 @@ jobs:
       - store_test_results:
           path: test-results
 
+  runner:
+    docker:
+      - image: cimg/base:2021.11
+    resource_class: atul/test
+    steps:
+      - run:
+          <<: *include_proxy_env      
+      - run: echo "Hi I'm on Runners!"
+          
+    
 workflows:
   version: 2
   resource_class_jobs:
@@ -274,7 +492,6 @@ workflows:
 
   vm_jobs:
     jobs:
-      - machine
       - remote_docker
       - docker_layer_caching
       - machine_dlc
@@ -297,11 +514,42 @@ workflows:
     jobs:
       - save_and_restore_cache
       - contexts:
-          context: org-global
+          context: atul-org-global
       - multi-contexts:
-          context: individual-local
+          context: atul-individual-local
       - write_workspace
       - read_workspace:
           requires:
             - write_workspace
       - artifacts_test_results
+
+  linux_jobs:
+    jobs:
+      - medium_linux
+      - large_linux
+      - xlarge_linux
+      - 2xlarge_linux
+
+  windows_jobs:
+    jobs:
+      - medium_windows
+      - large_windows
+      - xlarge_windows
+      - 2xlarge_windows
+
+  arm_jobs:
+    jobs:
+      - run_arm_jobs_if_ec2
+      - medium_arm:
+          requires:
+            - run_arm_jobs_if_ec2
+      - large_arm:
+          requires:
+            - run_arm_jobs_if_ec2
+  runner-test:
+    jobs:
+      - runner
+  
+  orb-test:
+    jobs:
+      - orb-test
