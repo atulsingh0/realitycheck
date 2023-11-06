@@ -70,7 +70,7 @@ contexts_defaults: &contexts_defaults
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
-  docker: [{image: 'circleci/node:latest'}]
+  docker: [{image: 'cimg/node:latest'}]
   working_directory: ~/foo/bar
 
 jobs:
@@ -107,6 +107,38 @@ jobs:
   xlarge: # 8 vCPUs, 16GB RAM
     <<: *resource_job_defaults
     resource_class: xlarge
+  
+  check_if_environment_is_aws:
+    docker:
+    - image: 'cimg/base:2021.02-20.04'
+    steps:
+      - run:
+          name: Verify AWS Environment
+          command: |
+            if [ -z "${CIRCLE_CLOUD_PROVIDER}" ];then
+              echo "You must provide the CIRCLE_CLOUD_PROVIDER environment variable in project settings for this job to run.";
+              exit 1;
+            fi
+            if [[ "${CIRCLE_CLOUD_PROVIDER}" != 'aws' ]]; then
+              echo "This installation is not in an AWS environment. Cancelling downstream workflow.";
+              curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
+            fi
+
+  check_if_environment_is_gcp:
+    docker:
+    - image: 'cimg/base:2021.02-20.04'
+    steps:
+      - run:
+          name: Verify GCP Environment
+          command: |
+            if [ -z "${CIRCLE_CLOUD_PROVIDER}" ];then
+              echo "You must provide the CIRCLE_CLOUD_PROVIDER environment variable in project settings for this job to run.";
+              exit 1;
+            fi
+            if [[ "${CIRCLE_CLOUD_PROVIDER}" != 'gcp' ]]; then
+              echo "This installation is not in an GCP environment. Cancelling downstream workflow.";
+              curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
+            fi
 
   # check if EC2
   run_arm_jobs_if_ec2:
@@ -137,6 +169,37 @@ jobs:
   large_linux:
     machine: true
     resource_class: large
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+  
+  android_machine:
+    machine:
+      image: android-default
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
+
+  aws_arm:
+    machine:
+      image: arm-default
+    resource_class: arm.medium
     steps:
       - run:
           <<: *basic_docker_build
@@ -304,13 +367,13 @@ jobs:
     <<: *contexts_defaults
     steps:
       - run: env | grep CONTEXT_END_TO_END_TEST_VAR
-      - run: echo $CONTEXT_END_TO_END_TEST_VAR
+      - run: echo "Value of CONTEXT_END_TO_END_TEST_VAR : $CONTEXT_END_TO_END_TEST_VAR"
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
       - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
-      - run: echo $CONTEXT_END_TO_END_TEST_VAR
+      - run: echo "Value of MULTI_CONTEXT_END_TO_END_VAR : $MULTI_CONTEXT_END_TO_END_VAR"
 
   write_workspace:
     <<: *workspaces_defaults
@@ -432,6 +495,20 @@ workflows:
       - remote_docker
       - docker_layer_caching
       - machine_dlc
+  
+  aws_jobs:
+    jobs:
+      - check_if_environment_is_aws
+      - aws_arm:
+          requires:
+            - check_if_environment_is_aws
+  
+  gcp_jobs:
+    jobs:
+      - check_if_environment_is_gcp
+      - android_machine:
+          requires:
+            - check_if_environment_is_gcp
 
   feature_jobs:
     jobs:
