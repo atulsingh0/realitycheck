@@ -34,9 +34,7 @@ basic_docker_build: &basic_docker_build
     dockerfile=Dockerfile
     echo "FROM busybox:latest" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
-    docker network ls
-    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
-    ip route
+    
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
@@ -50,7 +48,10 @@ jobs:
     resource_class: medium
     steps:
       - run:
-          <<: *include_proxy_env    
+          <<: *include_proxy_env
+      - run: docker network ls
+      - run: docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
+      - run: ip route
       - run:
           <<: *basic_docker_build
       - run: |
