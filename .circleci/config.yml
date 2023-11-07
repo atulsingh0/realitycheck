@@ -92,8 +92,7 @@ jobs:
           <<: *basic_docker_build
     environment:
       SLEEP: 1
-    environment:
-      SLEEP: 1
+
 
   xlarge_linux:
     machine: true
@@ -109,8 +108,7 @@ jobs:
           <<: *basic_docker_build
     environment:
       SLEEP: 1
-    environment:
-      SLEEP: 1
+
 
   large2x_linux:
     machine: true
@@ -126,7 +124,7 @@ jobs:
       - run:
           <<: *basic_docker_build
     environment:
-      SLEEP: 
+      SLEEP: 1
 
           
 ## ========================================================================
