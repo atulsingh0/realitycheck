@@ -114,7 +114,6 @@ jobs:
     machine: true
     resource_class: 2xlarge
     steps:
-    steps:
       - run:
           <<: *local_test    
       - run:
