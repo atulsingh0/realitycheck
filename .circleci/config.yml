@@ -26,6 +26,26 @@ include_proxy_env: &include_proxy_env
     sudo systemctl restart docker
     echo 'docker restarted'
 
+docker_install_test: &docker_install_test
+  name: "Testing Docker Installation"
+  command: |
+    echo "Listing Docker Network"
+    docker network ls
+    echo ""
+    echo "Inspecting Docker Bridge Network"
+    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
+    echo ""
+    echo "IP address/s"
+    ip route
+
+local_test: &local_test
+  name: "Running Commands locally"
+  command: |
+    echo $SLEEP
+    date
+    sleep $SLEEP
+    date
+    echo 'Done sleeping.'  
 
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
@@ -48,18 +68,13 @@ jobs:
     resource_class: medium
     steps:
       - run:
+          <<: *local_test    
+      - run:
           <<: *include_proxy_env
-      - run: docker network ls
-      - run: docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
-      - run: ip route
+      - run:
+          <<: *docker_install_test
       - run:
           <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
     environment:
       SLEEP: 1
   
@@ -68,13 +83,15 @@ jobs:
     resource_class: large
     steps:
       - run:
+          <<: *local_test    
+      - run:
+          <<: *include_proxy_env
+      - run:
+          <<: *docker_install_test
+      - run:
           <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
     environment:
       SLEEP: 1
 
@@ -83,13 +100,15 @@ jobs:
     resource_class: xlarge
     steps:
       - run:
+          <<: *local_test    
+      - run:
+          <<: *include_proxy_env
+      - run:
+          <<: *docker_install_test
+      - run:
           <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1
     environment:
       SLEEP: 1
 
@@ -97,14 +116,15 @@ jobs:
     machine: true
     resource_class: 2xlarge
     steps:
+    steps:
+      - run:
+          <<: *local_test    
+      - run:
+          <<: *include_proxy_env
+      - run:
+          <<: *docker_install_test
       - run:
           <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
     environment:
       SLEEP: 
 
