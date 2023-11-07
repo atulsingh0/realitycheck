@@ -4,7 +4,6 @@ remote_docker_defaults: &remote_docker_defaults
   docker: [{image: 'docker:17.06-git'}]
 
 include_proxy_env: &include_proxy_env
-include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
   command: |
     echo "PROXY ENV Variables......"
@@ -53,87 +52,6 @@ basic_docker_build: &basic_docker_build
 
 
 jobs:
-  # check if EC2
-  check_if_ec2:
-    machine: true
-    steps:
-      - run: |
-          result=$(curl http://169.254.169.254/latest/meta-data/instance-type)
-          echo "Result - $result"
-          if [[ $result == *"Not Found"* ]]; then exit 1; fi
-    environment:
-      SLEEP: 1
-
-  # windows jobs
-  medium_windows:
-    machine:
-      image: windows-default
-    resource_class: windows.medium
-    steps:
-      - checkout
-      - run: systeminfo
-
-  large_windows:
-    machine:
-      image: windows-default
-    resource_class: windows.large
-    steps:
-      - checkout
-      - run: systeminfo
-
-  xlarge_windows:
-    machine:
-      image: windows-default
-    resource_class: windows.xlarge
-    steps:
-      - checkout
-      - run: systeminfo
-
-  large2x_windows:
-    machine:
-      image: windows-default
-    resource_class: windows.2xlarge
-    steps:
-      - checkout
-      - run: systeminfo
-
-
-  # arm jobs
-  medium_arm:
-    machine:
-      image: arm-default
-    resource_class: arm.medium
-    steps:
-      - run:
-          <<: *include_proxy_env      
-      - run:
-          <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          hostname
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
-    environment:
-      SLEEP: 1
-
-  large_arm:
-    machine:
-      image: arm-default
-    resource_class: arm.large
-    steps:
-      - run:
-          <<: *basic_docker_build
-      - run: |
-          echo $SLEEP
-          date
-          sleep $SLEEP
-          date
-          echo 'Done sleeping.'
-    environment:
-      SLEEP: 1
-
   # vm jobs
   remote_docker:
     <<: *remote_docker_defaults
@@ -191,20 +109,4 @@ workflows:
       - docker_layer_caching
       - machine_dlc
 
-  windows_jobs:
-    jobs:
-      - medium_windows
-      # - large_windows
-      # - xlarge_windows
-      # - 2xlarge_windows
-
-  arm_jobs:
-    jobs:
-      - check_if_ec2
-      - medium_arm:
-          requires:
-            - check_if_ec2
-      # - large_arm:
-      #     requires:
-      #       - check_if_ec2
 
