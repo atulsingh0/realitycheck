@@ -3,25 +3,33 @@ version: 2.1
 include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
   command: |
-    # mkdir -p ~/.docker
-    # cat \<<EOF > ~/.docker/config.json
-    # {
-    # "proxies":
-    # {
-    #   "default":
-    # {
-    #   "httpProxy": "http://proxy.atul-proxy.internal:3128",
-    #   "httpsProxy": "http://proxy.atul-proxy.internal:3128",
-    #   "noProxy": "10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal"
-    # }
-    # }
-    # }
-    # EOF
+    echo "PROXY ENV Variables......"
+    echo "HTTP PROXY - $HTTP_PROXY"
+    echo "HTTPS PROXY - $HTTPS_PROXY"
+    echo "NO PROXY - $NO_PROXY"
+    echo ""
+
+    mkdir -p ~/.docker
+    cat \<<EOF > ~/.docker/config.json
+    {
+    "proxies":
+    {
+      "default":
+    {
+      "httpProxy": "http://proxy.atul-proxy.internal:3128",
+      "httpsProxy": "http://proxy.atul-proxy.internal:3128",
+      "noProxy": "10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal"
+    }
+    }
+    }
+    EOF
+
+    echo ""
     sudo mkdir /etc/systemd/system/docker.service.d
     sudo bash -c 'echo [Service] > /etc/systemd/system/docker.service.d/http-proxy.conf'
     sudo bash -c 'echo Environment="HTTP_PROXY=http://proxy.atul-proxy.internal:3128/" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
     sudo bash -c 'echo Environment="HTTPS_PROXY=http://proxy.atul-proxy.internal:3128/" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
-    # sudo bash -c 'echo Environment="NO_PROXY=10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
+    sudo bash -c 'echo Environment="NO_PROXY=10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal" >> /etc/systemd/system/docker.service.d/http-proxy.conf'
     sudo systemctl daemon-reload
     sudo systemctl restart docker
     echo 'docker restarted'
