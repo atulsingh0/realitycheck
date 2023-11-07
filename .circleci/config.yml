@@ -4,7 +4,6 @@ remote_docker_defaults: &remote_docker_defaults
   docker: [{image: 'docker:17.06-git'}]
 
 include_proxy_env: &include_proxy_env
-include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
   command: |
     echo "PROXY ENV Variables......"
@@ -134,49 +133,6 @@ jobs:
     environment:
       SLEEP: 1
 
-  # vm jobs
-  remote_docker:
-    <<: *remote_docker_defaults
-    steps:
-      - run: apk update && apk add sudo
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - setup_remote_docker
-      - run:
-          <<: *include_proxy_env      
-      - run:
-          <<: *basic_docker_build
-      - run: docker version
-
-  docker_layer_caching:
-    <<: *remote_docker_defaults
-    steps:
-      - run: apk update && apk add sudo    
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          <<: *include_proxy_env          
-      - run:
-          <<: *basic_docker_build
-      - run: docker version
-
-  machine_dlc:
-    machine:
-      docker_layer_caching: true
-    steps:
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - run:
-          <<: *include_proxy_env      
-      - run:
-          <<: *basic_docker_build
-      - run: docker version
-
 
           
 ## ========================================================================
@@ -184,12 +140,6 @@ jobs:
 ## ========================================================================
 workflows:
   version: 2
-
-  vm_jobs:
-    jobs:
-      - remote_docker
-      - docker_layer_caching
-      - machine_dlc
 
   windows_jobs:
     jobs:
