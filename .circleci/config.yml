@@ -36,9 +36,8 @@ basic_docker_build: &basic_docker_build
 
 
 jobs:
-
   # check if EC2
-  run_arm_jobs_if_ec2:
+  check_if_ec2:
     machine: true
     steps:
       - run: |
@@ -251,11 +250,11 @@ workflows:
 
   arm_jobs:
     jobs:
-      - run_arm_jobs_if_ec2
+      - check_if_ec2
       - medium_arm:
           requires:
-            - run_arm_jobs_if_ec2
-      - large_arm:
-          requires:
-            - run_arm_jobs_if_ec2
+            - check_if_ec2
+      # - large_arm:
+      #     requires:
+      #       - check_if_ec2
 
