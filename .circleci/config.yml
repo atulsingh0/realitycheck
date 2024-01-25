@@ -56,13 +56,14 @@ jobs:
   remote_docker:
     <<: *remote_docker_defaults
     steps:
+      - run:
+          <<: *include_proxy_env   
+      - setup_remote_docker
+
       - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
       - run: hostname
-      - setup_remote_docker
-      - run:
-          <<: *include_proxy_env      
       - run:
           <<: *basic_docker_build
       - run: docker version
