@@ -67,34 +67,6 @@ jobs:
           <<: *basic_docker_build
       - run: docker version
 
-  docker_layer_caching:
-    <<: *remote_docker_defaults
-    steps:
-      - run: apk update && apk add sudo    
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          <<: *include_proxy_env          
-      - run:
-          <<: *basic_docker_build
-      - run: docker version
-
-  machine_dlc:
-    machine:
-      docker_layer_caching: true
-    steps:
-      - run: which docker
-      - run: docker -v
-      - run: hostname
-      - run:
-          <<: *include_proxy_env      
-      - run:
-          <<: *basic_docker_build
-      - run: docker version
-
 
           
 ## ========================================================================
@@ -106,7 +78,4 @@ workflows:
   vm_jobs:
     jobs:
       - remote_docker
-      # - docker_layer_caching
-      # - machine_dlc
-
 
