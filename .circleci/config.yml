@@ -26,7 +26,6 @@ jobs:
   write_workspace:
     <<: *workspaces_defaults
     steps:
-      - run: docker version
       - run: mkdir stuff
       - run: echo 5 >./stuff/thing
       - persist_to_workspace:
