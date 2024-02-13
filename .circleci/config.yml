@@ -51,11 +51,22 @@ basic_docker_build: &basic_docker_build
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
 
+commands:
+  check_proxy_variables:
+    steps:
+      - run:
+          name: check proxy env variables
+          command: |
+            echo "HTTP_PROXY --> ${HTTP_PROXY}" 
+            echo "HTTPS_PROXY --> ${HTTPS_PROXY}" 
+            echo "NO_PROXY --> ${NO_PROXY}" 
+
 jobs:
   # vm jobs
   remote_docker:
     <<: *remote_docker_defaults
     steps:
+      - check_proxy_variables
       - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
@@ -70,6 +81,7 @@ jobs:
   docker_layer_caching:
     <<: *remote_docker_defaults
     steps:
+      - check_proxy_variables
       - run: apk update && apk add sudo    
       - run: which docker
       - run: docker -v
@@ -89,6 +101,7 @@ jobs:
       - run: which docker
       - run: docker -v
       - run: hostname
+      - check_proxy_variables
       # - run:
       #     <<: *include_proxy_env      
       - run:
@@ -98,6 +111,7 @@ jobs:
   machine:
     machine: true
     steps:
+      - check_proxy_variables
       - run:
           <<: *basic_docker_build
       - run: |
