@@ -83,7 +83,7 @@ jobs:
 workflows:
   version: 2
 
-  vm_jobs:
+  remote_docker:
     jobs:
       - remote_docker
 
