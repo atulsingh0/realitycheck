@@ -5,7 +5,7 @@ executors:
     parameters:
       resource_class:
         type: string
-        default: "small"
+        default: "medium"
     docker:
       - image: 'cimg/base:2021.02-20.04'
     resource_class: <<parameters.resource_class>>
@@ -20,6 +20,14 @@ executors:
     resource_class: <<parameters.resource_class>>
 
 commands:
+  check_proxy_variables:
+    steps:
+      - run:
+          name: check proxy env variables
+          command: |
+            echo "HTTP_PROXY --> ${HTTP_PROXY}" 
+            echo "HTTPS_PROXY --> ${HTTPS_PROXY}" 
+            echo "NO_PROXY --> ${NO_PROXY}" 
   # resource_class verification commands to execute depending on executor_type
   verify_resource_class:
     parameters:
@@ -169,6 +177,7 @@ jobs:
   machine:
     machine: true
     steps:
+      - run: check_proxy_variables    
       - run:
           <<: *basic_docker_build
       - run: |
@@ -200,6 +209,7 @@ jobs:
       image: arm-default
     resource_class: arm.medium
     steps:
+      - run: check_proxy_variables    
       - run:
           <<: *basic_docker_build
       - run: |
@@ -216,6 +226,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: check_proxy_variables      
       - setup_remote_docker
       - run:
           <<: *basic_docker_build
@@ -226,6 +237,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: check_proxy_variables      
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -238,6 +250,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
+      - run: check_proxy_variables
       - run:
           <<: *basic_docker_build
       - run: docker version
