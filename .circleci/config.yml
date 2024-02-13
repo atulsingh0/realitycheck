@@ -95,6 +95,20 @@ jobs:
           <<: *basic_docker_build
       - run: docker version
 
+  machine:
+    machine: true
+    steps:
+      - run:
+          <<: *basic_docker_build
+      - run: |
+          echo $SLEEP
+          date
+          sleep $SLEEP
+          date
+          echo 'Done sleeping.'
+    environment:
+      SLEEP: 1      
+
 
           
 ## ========================================================================
@@ -108,5 +122,6 @@ workflows:
       - remote_docker
       - docker_layer_caching
       - machine_dlc
+      - machine      
 
 
