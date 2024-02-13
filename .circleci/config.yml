@@ -56,6 +56,12 @@ jobs:
   remote_docker:
     <<: *remote_docker_defaults
     steps:
+      - run: |
+          echo "PROXY ENV Variables......"
+          echo "HTTP PROXY - $HTTP_PROXY"
+          echo "HTTPS PROXY - $HTTPS_PROXY"
+          echo "NO PROXY - $NO_PROXY"
+          echo ""
       - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
@@ -73,7 +79,7 @@ jobs:
 ##                WORKFLOW
 ## ========================================================================
 workflows:
-  version: 2.1
+  version: 2
 
   vm_jobs:
     jobs:
