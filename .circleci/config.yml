@@ -57,9 +57,15 @@ commands:
       - run:
           name: check proxy env variables
           command: |
+            echo "PROXY ENV Variables......"
             echo "HTTP_PROXY --> ${HTTP_PROXY}" 
             echo "HTTPS_PROXY --> ${HTTPS_PROXY}" 
-            echo "NO_PROXY --> ${NO_PROXY}" 
+            echo "NO_PROXY --> ${NO_PROXY}"
+            echo ""
+            echo "Checking Docker config - "
+            cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
+            echo ""
+           
 
 jobs:
   # vm jobs
@@ -136,6 +142,4 @@ workflows:
       - remote_docker
       - docker_layer_caching
       - machine_dlc
-      - machine      
-
-
+      - machine
