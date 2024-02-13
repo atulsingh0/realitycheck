@@ -61,6 +61,7 @@ jobs:
           echo "HTTP PROXY - $HTTP_PROXY"
           echo "HTTPS PROXY - $HTTPS_PROXY"
           echo "NO PROXY - $NO_PROXY"
+          echo ""          
           echo "Checking Docker config - "
           cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
           echo ""
