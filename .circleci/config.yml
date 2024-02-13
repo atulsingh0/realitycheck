@@ -61,8 +61,8 @@ jobs:
       - run: docker -v
       - run: hostname
       - setup_remote_docker
-      - run:
-          <<: *include_proxy_env      
+      # - run:
+      #     <<: *include_proxy_env      
       - run:
           <<: *basic_docker_build
       - run: docker version
