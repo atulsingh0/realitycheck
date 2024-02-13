@@ -77,8 +77,8 @@ jobs:
     steps:
       - run:
           <<: *local_test    
-      - run:
-          <<: *include_proxy_env
+      # - run:
+      #     <<: *include_proxy_env
       - run:
           <<: *docker_install_test
       - run:
@@ -92,8 +92,8 @@ jobs:
     steps:
       - run:
           <<: *local_test    
-      - run:
-          <<: *include_proxy_env
+      # - run:
+      #     <<: *include_proxy_env
       - run:
           <<: *docker_install_test
       - run:
@@ -108,8 +108,8 @@ jobs:
     steps:
       - run:
           <<: *local_test    
-      - run:
-          <<: *include_proxy_env
+      # - run:
+      #     <<: *include_proxy_env
       - run:
           <<: *docker_install_test
       - run:
@@ -124,8 +124,8 @@ jobs:
     steps:
       - run:
           <<: *local_test    
-      - run:
-          <<: *include_proxy_env
+      # - run:
+      #     <<: *include_proxy_env
       - run:
           <<: *docker_install_test
       - run:
@@ -143,6 +143,6 @@ workflows:
   linux_jobs:
     jobs:
       - medium_linux
-      # - large_linux
+      - large_linux
       # - xlarge_linux
       # - 2xlarge_linux
