@@ -177,7 +177,7 @@ jobs:
   machine:
     machine: true
     steps:
-      - run: check_proxy_variables    
+      - check_proxy_variables    
       - run:
           <<: *basic_docker_build
       - run: |
@@ -209,7 +209,7 @@ jobs:
       image: arm-default
     resource_class: arm.medium
     steps:
-      - run: check_proxy_variables    
+      - check_proxy_variables    
       - run:
           <<: *basic_docker_build
       - run: |
@@ -226,7 +226,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
-      - run: check_proxy_variables      
+      - check_proxy_variables      
       - setup_remote_docker
       - run:
           <<: *basic_docker_build
@@ -237,7 +237,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
-      - run: check_proxy_variables      
+      - check_proxy_variables      
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
