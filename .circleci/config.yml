@@ -61,6 +61,8 @@ jobs:
           echo "HTTP PROXY - $HTTP_PROXY"
           echo "HTTPS PROXY - $HTTPS_PROXY"
           echo "NO PROXY - $NO_PROXY"
+          echo "Checking Docker config - "
+          cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
           echo ""
       - run: apk update && apk add sudo
       - run: which docker
