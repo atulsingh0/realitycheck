@@ -53,17 +53,17 @@ jobs:
     working_directory: ~/realitycheck
     steps:
       - run: |
-         # mkdir -p ~/.ssh
-         # cat > config \<<EOF
-         # Host  github.com
-         #   User git
-         #   ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
-         # EOF
-         # chmod 600 config
-         # mv config ~/.ssh/config
-         # chmod 600 ~/.ssh
-         git config --global http.proxy ${HTTP_PROXY}
-         git config --global https.proxy ${HTTP_PROXY}
+         mkdir -p ~/.ssh
+         cat > config \<<EOF
+         Host  github.com
+           User git
+           ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
+         EOF
+         chmod 600 config
+         mv config ~/.ssh/config
+         chmod 600 ~/.ssh
+        #  git config --global http.proxy ${HTTP_PROXY}
+        #  git config --global https.proxy ${HTTP_PROXY}
       - checkout
       - run: mkdir -p stuff
       - run: echo 5 >./stuff/thing
