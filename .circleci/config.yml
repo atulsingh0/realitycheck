@@ -77,7 +77,6 @@ jobs:
   remote_docker:
     <<: *remote_docker_defaults
     steps:
-      - print-startup-script
       - check_proxy_variables
       - run: apk update && apk add sudo
       - run: which docker
