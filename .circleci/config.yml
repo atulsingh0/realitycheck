@@ -94,8 +94,8 @@ jobs:
     steps:
       - print-startup-script
       - check_proxy_variables
-      - run:
-          <<: *include_proxy_env            
+      # - run:
+      #     <<: *include_proxy_env            
       - run:
           <<: *basic_docker_build
       - run: |
