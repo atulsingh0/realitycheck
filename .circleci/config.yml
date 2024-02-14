@@ -50,6 +50,15 @@ basic_docker_build: &basic_docker_build
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
+basic_docker_build_2: &basic_docker_build_2
+  name: "Build a really basic docker image"
+  command: |
+    hostname
+    dockerfile=Dockerfile2
+    echo "FROM busybox:latest" > $dockerfile
+    echo "RUN echo hello" >> $dockerfile
+    docker build -f $dockerfile --tag throwaway2:$CIRCLE_BUILD_NUM .
+    docker run --rm throwaway2:$CIRCLE_BUILD_NUM
 
 commands:
   check_proxy_variables:
@@ -72,7 +81,7 @@ commands:
           name: Print Init Script
           command: |
             [ -f /etc/resolv.conf ] && cat /etc/resolv.conf
-            echo "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf
+            # echo "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf
             curl http://169.254.169.254/latest/user-data
 
 jobs:
@@ -87,7 +96,7 @@ jobs:
       - run: hostname
       - setup_remote_docker
       # - run:
-      #     <<: *include_proxy_env      
+      #     <<: *include_proxy_env
       - run:
           <<: *basic_docker_build
       - run: docker version
@@ -98,9 +107,12 @@ jobs:
       - print-startup-script
       - check_proxy_variables
       # - run:
-      #     <<: *include_proxy_env            
+      #     <<: *include_proxy_env
+      - run: docker pull alpine:latest            
       - run:
           <<: *basic_docker_build
+      - run:
+          <<: *basic_docker_build_2       
       - run: |
           echo $SLEEP
           date
