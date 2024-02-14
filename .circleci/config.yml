@@ -111,6 +111,10 @@ jobs:
       - run: docker pull alpine:latest            
       - run:
           <<: *basic_docker_build
+      - run: |
+          export HTTP_PROXY=http://proxy.atul-proxy.internal:3128
+          export HTTPS_PROXY=http://proxy.atul-proxy.internal:3128
+          export NO_PROXY=10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,s3.us-east-1.amazonaws.com,k3s.atul-proxy.sphereci.com,app.k3s.atul-proxy.sphereci.com,169.254.169.254,svc.cluster.local
       - run:
           <<: *basic_docker_build_2       
       - run: |
