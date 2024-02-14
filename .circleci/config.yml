@@ -250,7 +250,7 @@ jobs:
     steps:
       - run: which docker
       - run: docker -v
-      - run: check_proxy_variables
+      - check_proxy_variables
       - run:
           <<: *basic_docker_build
       - run: docker version
