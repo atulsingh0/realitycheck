@@ -157,5 +157,6 @@ workflows:
 
   mp_dp_jobs:
     jobs:
+      - docker
       - remote_docker
       - machine
