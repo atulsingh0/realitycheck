@@ -97,6 +97,7 @@ jobs:
       - run: which docker
       - run: docker -v
       - run: hostname
+      - setup_remote_docker
       # - run:
       #     <<: *include_proxy_env
       - run:
