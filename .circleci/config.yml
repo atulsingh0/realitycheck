@@ -85,7 +85,24 @@ commands:
             curl http://169.254.169.254/latest/user-data
 
 jobs:
-  # vm jobs
+  docker:
+    <<: *remote_docker_defaults
+    steps:
+      - check_proxy_variables
+      # - run: |
+      #     export HTTP_PROXY=http://proxy.atul-proxy.internal:3128
+      #     export HTTPS_PROXY=http://proxy.atul-proxy.internal:3128
+      #     export NO_PROXY=10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,s3.us-east-1.amazonaws.com,k3s.atul-proxy.sphereci.com,app.k3s.atul-proxy.sphereci.com,169.254.169.254,svc.cluster.local      
+      - run: apk update && apk add sudo
+      - run: which docker
+      - run: docker -v
+      - run: hostname
+      # - run:
+      #     <<: *include_proxy_env
+      - run:
+          <<: *basic_docker_build
+      - run: docker version
+
   remote_docker:
     <<: *remote_docker_defaults
     steps:
@@ -138,7 +155,7 @@ jobs:
 workflows:
   version: 2
 
-  vm_jobs:
+  mp_dp_jobs:
     jobs:
       - remote_docker
       - machine
