@@ -1,41 +1,12 @@
 version: 2.1
 
-include_proxy_env: &include_proxy_env
-  name: "Set Proxy Env"
-  command: |
-    mkdir -p ~/.docker
-    cat \<<EOF > ~/.docker/config.json
-    {
-    "proxies":
-    {
-      "default":
-    {
-      "httpProxy": "http://proxy.atul-proxy.internal:3128",
-      "httpsProxy": "http://proxy.atul-proxy.internal:3128",
-      "noProxy": "10.0.0.0/16,localhost,127.0.0.1,10.42.0.0/16,10.43.0.0/16,k3s.atul-proxy.internal"
-    }
-    }
-    }
-    EOF
-
-jobs:
-  runner:
-    docker:
-      - image: cimg/base:2021.11
-    resource_class: atul/test
-    steps:
-      # - run:
-      #     <<: *include_proxy_env      
-      - run: echo "Hi I'm on Runners!"
-
-          
-## ========================================================================
-##                WORKFLOW RUNNER
-## ========================================================================
 workflows:
-  version: 2
-  runner-test:
+  build-workflow:
     jobs:
-      - runner
-  
-
+      - machine-runner
+jobs:
+  machine-runner:
+    machine: true
+    resource_class: atulsingh0/mtesting
+    steps:
+      - run: echo "Hi I'm on Runners!"
