@@ -22,7 +22,7 @@ jobs:
   runner:
     docker:
       - image: cimg/base:2021.11
-    resource_class: atul/test
+    resource_class: atulsingh0/testing
     steps:
       # - run:
       #     <<: *include_proxy_env      
