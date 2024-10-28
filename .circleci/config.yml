@@ -57,7 +57,7 @@ jobs:
          cat > config \<<EOF
          Host  github.com
            User git
-           ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
+           ProxyCommand nc -x ${HTTP_PROXY} -Xconnect %h %p
          EOF
          chmod 600 config
          mv config ~/.ssh/config
@@ -97,7 +97,7 @@ jobs:
          cat > config \<<EOF
          Host  github.com
            User git
-           ProxyCommand nc -x proxy.atul-proxy.internal:3128 -Xconnect %h %p
+           ProxyCommand nc -x ${HTTP_PROXY} -Xconnect %h %p
          EOF
          chmod 600 config
          mv config ~/.ssh/config
