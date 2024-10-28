@@ -11,8 +11,8 @@ jobs:
     resource_class: atulsingh0/mrunner
     steps:
       - run: echo "Hi I'm on Machine Runners!"
+
   container-runner:
-    machine: true
     resource_class: atulsingh0/crunner
     steps:
       - run: echo "Hi I'm on Container Runners!"
