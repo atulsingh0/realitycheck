@@ -62,7 +62,7 @@ jobs:
          EOF
          chmod 600 config
          mv config ~/.ssh/config
-         chmod 600 ~/.ssh
+         chmod 700 ~/.ssh
         #  git config --global http.proxy ${HTTP_PROXY}
         #  git config --global https.proxy ${HTTP_PROXY}
       - checkout
