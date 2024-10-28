@@ -53,9 +53,9 @@ jobs:
     working_directory: ~/realitycheck
     steps:
       - run: |
-         ls -l ~/.ssh || mkdir -p ~/.ssh 
+         ls -ld ~/.ssh || mkdir -p ~/.ssh 
          chmod 700 ~/.ssh
-         ls -l ~/.ssh
+         ls -ld ~/.ssh
          cat > config \<<EOF
          Host  github.com
            User git
