@@ -64,6 +64,6 @@ workflows:
     jobs:
       - small
       - medium
-      # - medium+
-      # - large
-      # - xlarge
+      - medium+
+      - large
+      - xlarge
