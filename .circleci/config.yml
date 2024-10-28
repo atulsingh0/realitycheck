@@ -4,9 +4,15 @@ workflows:
   build-workflow:
     jobs:
       - machine-runner
+      - container-runner
 jobs:
   machine-runner:
     machine: true
-    resource_class: atulsingh0/mtesting
+    resource_class: atulsingh0/mrunner
     steps:
-      - run: echo "Hi I'm on Runners!"
+      - run: echo "Hi I'm on Machine Runners!"
+  container-runner:
+    machine: true
+    resource_class: atulsingh0/crunner
+    steps:
+      - run: echo "Hi I'm on Container Runners!"
