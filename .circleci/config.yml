@@ -53,7 +53,8 @@ jobs:
     working_directory: ~/realitycheck
     steps:
       - run: |
-         mkdir -p ~/.ssh
+         mkdir -p ~/.ssh 
+         chmod 700 ~/.ssh
          cat > config \<<EOF
          Host  github.com
            User git
