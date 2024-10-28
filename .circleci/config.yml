@@ -54,7 +54,6 @@ jobs:
     steps:
       - run: |
          ls -ld ~/.ssh || mkdir -p ~/.ssh 
-         chmod 700 ~/.ssh
          ls -ld ~/.ssh
          cat > config \<<EOF
          Host  github.com
