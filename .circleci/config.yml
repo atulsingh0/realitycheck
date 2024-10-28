@@ -55,6 +55,7 @@ jobs:
       - run: |
          ls -l ~/.ssh || mkdir -p ~/.ssh 
          chmod 700 ~/.ssh
+         ls -l ~/.ssh
          cat > config \<<EOF
          Host  github.com
            User git
