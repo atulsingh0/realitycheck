@@ -343,6 +343,12 @@ jobs:
       - store_test_results:
           path: test-results
 
+  long-running-job:
+    <<: *remote_docker_defaults
+    steps:
+      - run: sleep 120
+
+
 workflows:
   docker_resource_class_jobs:
     jobs:
@@ -400,3 +406,4 @@ workflows:
   other_jobs:
     jobs:   
       - env-subst-example
+      - long-running-job
