@@ -345,15 +345,6 @@ jobs:
       - store_test_results:
           path: test-results
 
-  long-running-job:
-    parameters:
-      SLEEP_SEC:
-        type: integer
-        default: 120
-    <<: *remote_docker_defaults
-    steps:
-      - run: sleep << parameters.SLEEP_SEC >>
-
 
 workflows:
   docker_resource_class_jobs:
@@ -412,7 +403,3 @@ workflows:
   other_jobs:
     jobs:   
       - env-subst-example
-
-  long-running:
-    jobs:
-      - long-running-job
