@@ -42,7 +42,7 @@ basic_docker_build: &basic_docker_build
   command: |
     hostname
     dockerfile=Dockerfile
-    echo "FROM alpine:latest" > $dockerfile
+    echo "FROM alpine" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
     docker network ls
     docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
