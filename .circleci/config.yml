@@ -19,14 +19,14 @@ local_test: &local_test
     date
     sleep $SLEEP
     date
-    echo 'Done sleeping.'  
-
+    echo 'Done sleeping.'
+    
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
   command: |
     hostname
     dockerfile=Dockerfile
-    echo "FROM busybox:latest" > $dockerfile
+    echo "FROM busybox" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
     
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
