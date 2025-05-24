@@ -3,10 +3,12 @@ version: 2.1
 
 contexts_defaults: &contexts_defaults
   docker: [{image: 'alpine:latest'}]
+  resource_class: "small"
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
   docker: [{image: 'cimg/node:current'}]
+  resource_class: "small"
   working_directory: ~/foo/bar
 
 jobs:
