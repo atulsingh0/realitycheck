@@ -19,14 +19,17 @@ include_proxy_env: &include_proxy_env
     EOF
 
 jobs:
-  runner:
+  container_runner:
     docker:
       - image: cimg/base:2021.11
-    resource_class: atulsingh0/testing
+    resource_class: atulsingh0/crunner
     steps:
       # - run:
       #     <<: *include_proxy_env      
-      - run: echo "Hi I'm on Runners!"
+      - run: echo "Hi I'm on Containner Runners!"
+      - run: ps -ef 
+      - run: cat /proc/cmdline
+      - run: cat /proc/1/cmdline
 
           
 ## ========================================================================
@@ -36,6 +39,6 @@ workflows:
   version: 2
   runner-test:
     jobs:
-      - runner
+      - container_runner
   
 
