@@ -7,7 +7,7 @@ executors:
         type: string
         default: "medium"
     docker:
-      - image: 'cimg/base:2024.08-20.04'
+      - image: 'cimg/base:2025.05-20.04'
     resource_class: <<parameters.resource_class>>
   windows:  # Windows using the default windows image
     parameters:
@@ -260,11 +260,13 @@ jobs:
     <<: *contexts_defaults
     steps:
       - run: env | grep CONTEXT_END_TO_END_TEST_VAR
+      - run: env
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
       - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
+      - run: env
 
   write_workspace:
     <<: *workspaces_defaults
@@ -321,7 +323,7 @@ jobs:
 
   artifacts_test_results:
     docker:
-      - image: python:3.12.5
+      - image: python:3.13.3
     working_directory: ~/realitycheck
     steps:
       - checkout
