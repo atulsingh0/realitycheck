@@ -43,6 +43,6 @@ jobs:
           command: echo "Bye Bye $(date)"
 
 workflows:
-  say-hello-workflow:
+  nomad-docker:
     jobs:
       - say-hello
