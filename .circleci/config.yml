@@ -54,6 +54,7 @@ jobs:
       - image: cimg/python:3.10
     working_directory: ~/realitycheck
     steps:
+    # git/ssh config is required if using checkout command in cci config
       - run: |
          ls -ld ~/.ssh || mkdir -p ~/.ssh 
          ls -ld ~/.ssh
