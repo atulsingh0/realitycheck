@@ -24,7 +24,7 @@ jobs:
           command: "cat /proc/1/cmdline"
       - run:
           name: "I am calling from"
-          command: "wget ipinfo.io && cat index.html && rm index.html"          
+          command: "wget ipinfo.io && cat index.html && rm index.html || echo 'I am not going to work in Proxy Env'"          
       - run:
           name: "Get the running processes"
           command: "ps -ef"
