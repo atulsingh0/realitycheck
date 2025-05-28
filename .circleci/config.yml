@@ -88,4 +88,4 @@ workflows:
   windows_jobs:
     jobs:
       - medium_windows
-      - large_windows
+#      - large_windows
