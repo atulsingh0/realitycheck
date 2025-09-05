@@ -20,6 +20,17 @@ executors:
     resource_class: <<parameters.resource_class>>
 
 commands:
+  cancel_workflow:
+    parameters:
+      workflow_id:
+        type: string
+    steps:
+       - run:
+          name: Cancelling the workflow
+          command: |
+            echo "curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=XXXXXXX"
+            curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"          
+    
   check_proxy_variables:
     steps:
       - run:
@@ -144,6 +155,7 @@ jobs:
             fi
             if [[ "${CIRCLE_CLOUD_PROVIDER}" != 'aws' ]]; then
               echo "This installation is not in an AWS environment. Cancelling downstream workflow.";
+              echo "curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=XXXXXXX"
               curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
             fi
 
@@ -159,6 +171,7 @@ jobs:
             fi
             if [[ "${CIRCLE_CLOUD_PROVIDER}" != 'gcp' ]]; then
               echo "This installation is not in an GCP environment. Cancelling downstream workflow.";
+              echo "curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=XXXXXXX"              
               curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
             fi
 
