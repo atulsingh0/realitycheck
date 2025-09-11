@@ -92,6 +92,7 @@ commands:
 
 remote_docker_defaults: &remote_docker_defaults
   docker: [{image: 'docker:25.0-git'}]
+  resource_class: "small"
 
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
@@ -104,10 +105,12 @@ basic_docker_build: &basic_docker_build
 
 contexts_defaults: &contexts_defaults
   docker: [{image: 'alpine:latest'}]
+  resource_class: "small"  
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
   docker: [{image: 'cimg/node:current'}]
+  resource_class: "small"
   working_directory: ~/foo/bar
 
 jobs:
@@ -191,6 +194,7 @@ jobs:
   # vm jobs
   machine:
     machine: true
+    resource_class: "small"
     steps:
       - check_proxy_variables    
       - run:
@@ -207,6 +211,7 @@ jobs:
   android_machine:
     machine:
       image: android-default
+    resource_class: "small"      
     steps:
       - run:
           <<: *basic_docker_build
@@ -262,6 +267,7 @@ jobs:
   machine_dlc:
     machine:
       docker_layer_caching: true
+    resource_class: "small"      
     steps:
       - run: which docker
       - run: docker -v
@@ -310,6 +316,7 @@ jobs:
   save_and_restore_cache:
     docker:
       - image: cimg/python:3.10
+    resource_class: "small"      
     working_directory: ~/realitycheck
     steps:
       - checkout
@@ -339,6 +346,7 @@ jobs:
   artifacts_test_results:
     docker:
       - image: python:3.13.3
+    resource_class: "small"      
     working_directory: ~/realitycheck
     steps:
       - checkout
@@ -362,8 +370,7 @@ jobs:
 
 
   blobless-job:
-    docker:
-      - image: cimg/base:stable
+    executor: docker  
     steps:
       - checkout:
           method: blobless
@@ -375,8 +382,7 @@ jobs:
           command: cat .git/config
 
   full-job:
-    docker:
-      - image: cimg/base:stable
+    executor: docker
     steps:
       - checkout:
           method: full
