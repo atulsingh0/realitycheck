@@ -360,6 +360,32 @@ jobs:
           path: test-results
 
 
+  blobless-job:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout:
+          method: blobless
+      - run:
+          name: Print repo size
+          command: du -sh .
+      - run:
+          name: Print .git/config
+          command: cat .git/config
+
+  full-job:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout:
+          method: full
+      - run:
+          name: Print repo size
+          command: du -sh .
+      - run:
+          name: Print .git/config
+          command: cat .git/config
+
 workflows:
   docker_resource_class_jobs:
     jobs:
@@ -417,3 +443,5 @@ workflows:
   other_jobs:
     jobs:   
       - env-subst-example
+      - blobless-job
+      - full-job
