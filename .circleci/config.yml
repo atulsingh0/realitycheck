@@ -5,10 +5,11 @@ executors:
     parameters:
       resource_class:
         type: string
-        default: "medium"
+        default: "small"
     docker:
       - image: 'cimg/base:2025.05-20.04'
     resource_class: <<parameters.resource_class>>
+  
   windows:  # Windows using the default windows image
     parameters:
       resource_class:
