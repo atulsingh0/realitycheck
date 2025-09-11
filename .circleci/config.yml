@@ -183,7 +183,8 @@ jobs:
           command: |
             if [[ "${CIRCLE_WINDOWS_EXECUTOR}" != "true" ]]; then
               echo "Windows executor environment flag is not set to \"true\". Cancelling downstream workflow."
-              curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
+              circleci-agent step halt
+              #curl -X POST "${CIRCLE_HOSTNAME%/}/api/v2/workflow/$CIRCLE_WORKFLOW_ID/cancel?circle-token=$CIRCLE_TOKEN"
             fi
 
   # vm jobs
