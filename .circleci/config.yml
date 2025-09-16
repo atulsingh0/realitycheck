@@ -8,6 +8,9 @@ executors:
         default: "small"
     docker:
       - image: 'cimg/base:2025.05-20.04'
+        auth:
+          username: datagenx  # can specify string literal values
+          password: $DOCKERHUB_PASSWORD  # or project environment variable reference      
     resource_class: <<parameters.resource_class>>
   
   windows:  # Windows using the default windows image
@@ -91,7 +94,11 @@ commands:
                   $job.executor.resource_class | Select-String -Pattern "<<parameters.resource_class>>"
 
 remote_docker_defaults: &remote_docker_defaults
-  docker: [{image: 'docker:25.0-git'}]
+  docker:
+    - image: 'cimg/base:2025.05-20.04'
+      auth:  
+        username: datagenx  # can specify string literal values
+        password: $DOCKERHUB_PASSWORD  
   resource_class: "small"
 
 basic_docker_build: &basic_docker_build
@@ -104,12 +111,20 @@ basic_docker_build: &basic_docker_build
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
 contexts_defaults: &contexts_defaults
-  docker: [{image: 'alpine:latest'}]
+  docker:
+    - image: 'alpine:latest'
+      auth:  
+        username: datagenx  # can specify string literal values
+        password: $DOCKERHUB_PASSWORD  
   resource_class: "small"  
   working_directory: /a/contexts/test
 
 workspaces_defaults: &workspaces_defaults
-  docker: [{image: 'cimg/node:current'}]
+  docker:
+    - image: 'cimg/node:current'
+      auth:  
+        username: datagenx  # can specify string literal values
+        password: $DOCKERHUB_PASSWORD  
   resource_class: "small"
   working_directory: ~/foo/bar
 
