@@ -107,6 +107,7 @@ basic_docker_build: &basic_docker_build
     dockerfile=Dockerfile
     echo "FROM alpine:latest" > $dockerfile
     echo "RUN echo hello" >> $dockerfile
+    echo -n $DOCKERHUB_PASSWORD | docker login --username datagenx --password-stdin || echo "\n ***** Docker login failed ***** \n"
     docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
     docker run --rm throwaway:$CIRCLE_BUILD_NUM
 
