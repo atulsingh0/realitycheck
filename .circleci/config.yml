@@ -220,20 +220,20 @@ jobs:
               exit 1
             fi
             
-            CIRCLE_TOKEN=$(echo "$CIRCLE_TOKEN_RESPONSE" | jq -r '.token')
+            CIRCLE_TOKEN_OBTAINED=$(echo "$CIRCLE_TOKEN_RESPONSE" | jq -r '.token')
             
-            if [ -z "$CIRCLE_TOKEN" ] || [ "$CIRCLE_TOKEN" = "null" ]; then
+            if [ -z "$CIRCLE_TOKEN_OBTAINED" ] || [ "$CIRCLE_TOKEN_OBTAINED" = "null" ]; then
               echo "ERROR: Invalid CircleCI token in response"
               exit 1
             fi
             
             echo "CircleCI token obtained"
-            echo "CIRCLE_TOKEN=$CIRCLE_TOKEN" >> $BASH_ENV
+            echo "CIRCLE_TOKEN_OBTAINED=$CIRCLE_TOKEN_OBTAINED" >> $BASH_ENV
       - run:
           name: "Get and check main branch pipeline"
           command: |
             echo "Getting main branch pipeline..."
-            MAIN_BRANCH_RESP=$(curl -s -H "Circle-Token: $CIRCLE_TOKEN" \
+            MAIN_BRANCH_RESP=$(curl -s -H "Circle-Token: $CIRCLE_TOKEN_OBTAINED" \
               "${CIRCLE_HOSTNAME%/}/api/v2/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pipeline?branch=main")
             
             if ! echo "$MAIN_BRANCH_RESP" | jq empty 2>/dev/null; then
@@ -277,6 +277,44 @@ jobs:
               echo "[FAILED] Latest main branch pipeline failed: $PIPELINE_STATE"
               exit 1
             fi
+      - run:
+          name: beat up APIs
+          command: |
+            function hitit {
+              http_code=`curl -Ls -H "Circle-Token: $CIRCLE_TOKEN_OBTAINED" \
+                -o response.txt -w "%{response_code}" \
+                "$1"`
+              if [ "$http_code" != "200" ]; then
+                echo "API call to $1 failed with code $http_code"
+                echo "$http_code $1" >> failures.txt
+                cat response.txt
+                echo -e "\n\n"
+              else
+                echo "Success $http_code to $1"
+                echo "$http_code $1" >> successes.txt
+              fi 
+            }
+            export project_slug="gh/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+
+            hitit "https://ifconfig.me"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/project/${project_slug}"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/project/${project_slug}/checkout-key"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/project/${project_slug}/settings"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/me"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v1.1/project/${project_slug}"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v1.1/project/${project_slug}/tree/master"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/pipeline"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/project/${project_slug}/job/${CIRCLE_BUILD_NUM}"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/workflow/${CIRCLE_WORKFLOW_ID}"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/deploy/environments"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/projects/${CIRCLE_PROJECT_ID}/pipeline-definitions"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/project/${project_slug}/schedule"
+            hitit "${CIRCLE_HOSTNAME%/}/api/v2/insights/${project_slug}/flaky-tests"
+            echo "FAILED URLS"
+            cat failures.txt
+
+            echo "successful"
+            cat successes.txt            
 
 
   env-subst-example:
