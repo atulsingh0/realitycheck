@@ -182,13 +182,18 @@ jobs:
             if [ ! -S "$TASK_TOKEN_SOCKET" ]; then
               echo "ERROR: Task token socket not found at $TASK_TOKEN_SOCKET"
               exit 1
+            else
+              lsof "$TASK_TOKEN_SOCKET"
             fi
             
             SOCKET_RESPONSE=$(echo "get_token" | nc -U "$TASK_TOKEN_SOCKET")
             
             if [ -z "$SOCKET_RESPONSE" ]; then
-              echo "ERROR: Failed to get response from socket"
-              exit 1
+              SOCKET_RESPONSE=$(nc -U "$TASK_TOKEN_SOCKET")
+              if [ -z "$SOCKET_RESPONSE" ]; then
+                echo "ERROR: Failed to get response from socket"
+                exit 1
+              fi
             fi
             
             if ! echo "$SOCKET_RESPONSE" | jq empty 2>/dev/null; then
