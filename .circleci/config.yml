@@ -331,7 +331,7 @@ jobs:
 
   save_and_restore_cache:
     docker:
-      - image: cimg/python:edge
+      - image: cimg/python:current
     resource_class: "small"      
     working_directory: ~/realitycheck
     steps:
@@ -361,7 +361,7 @@ jobs:
 
   artifacts_test_results:
     docker:
-      - image: python:edge
+      - image: python:3.13
     resource_class: "small"      
     working_directory: ~/realitycheck
     steps:
