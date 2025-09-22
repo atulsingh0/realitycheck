@@ -7,7 +7,7 @@ executors:
         type: string
         default: "small"
     docker:
-      - image: 'cimg/base:2025.05-20.04'
+      - image: 'cimg/base:current'
         auth:
           username: datagenx  # can specify string literal values
           password: $DOCKERHUB_PASSWORD  # or project environment variable reference      
@@ -95,7 +95,7 @@ commands:
 
 remote_docker_defaults: &remote_docker_defaults
   docker:
-    - image: 'cimg/base:2025.05-20.04'
+    - image: 'cimg/base:current'
       auth:  
         username: datagenx  # can specify string literal values
         password: $DOCKERHUB_PASSWORD  
