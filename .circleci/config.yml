@@ -331,7 +331,7 @@ jobs:
 
   save_and_restore_cache:
     docker:
-      - image: cimg/python:current
+      - image: cimg/python:3.14
         auth:
           username: datagenx  # can specify string literal values
           password: $DOCKERHUB_PASSWORD      
