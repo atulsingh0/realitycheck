@@ -130,6 +130,18 @@ workspaces_defaults: &workspaces_defaults
   working_directory: ~/foo/bar
 
 jobs:
+  job-queue-check:
+    executor: docker
+    steps:
+      - checkout
+      - run:
+        command: echo "Works only in Server Version >= 4.9"
+      - run:
+        command: sleep 1
+      - run:
+        command: echo "Bye"
+      
+      
   env-subst-example:
     executor: docker
     environment:
@@ -474,3 +486,5 @@ workflows:
       - env-subst-example
       - blobless-job
       - full-job
+      - job-queue-check
+          serial-group: << pipeline.project.slug >>/queue-check
