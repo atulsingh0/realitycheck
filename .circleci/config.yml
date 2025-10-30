@@ -487,4 +487,3 @@ workflows:
       - blobless-job
       - full-job
       - job-queue-check
-          serial-group: << pipeline.project.slug >>/queue-check
