@@ -135,11 +135,11 @@ jobs:
     steps:
       - checkout
       - run:
-        command: echo "Works only in Server Version >= 4.9"
+          command: echo "Works only in Server Version >= 4.9"
       - run:
-        command: sleep 1
+          command: sleep 1
       - run:
-        command: echo "Bye"
+          command: echo "Bye"
       
       
   env-subst-example:
