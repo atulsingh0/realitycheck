@@ -11,6 +11,18 @@ jobs:
     resource_class: atulsingh0/mrunner
     steps:
       - run: echo "Hi I'm on Machine Runners!"
+    steps:
+      - run: sleep 5
+    steps:
+      - run: curl ifconfig.me
+    steps:
+      - run: cat /proc/cmdline
+    steps:
+      - run: ps aux
+    steps:
+      - run: cat /proc/1/cmdline
+    steps:
+      - run: sleep 5
 
   container-runner:
     docker:
@@ -18,3 +30,16 @@ jobs:
     resource_class: atulsingh0/crunner
     steps:
       - run: echo "Hi I'm on Container Runners!"
+    steps:
+      - run: sleep 5
+    steps:
+      - run: curl ifconfig.me
+    steps:
+      - run: cat /proc/cmdline
+    steps:
+      - run: ps aux
+    steps:
+      - run: cat /proc/1/cmdline
+    steps:
+      - run: sleep 5
+    
