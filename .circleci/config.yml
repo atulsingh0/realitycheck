@@ -7,7 +7,6 @@ workflows:
       - container-runner
 jobs:
   machine-runner:
-    machine: true
     resource_class: atulsingh0/mrunner
     steps:
       - run: echo "Hi I'm on Machine Runners!"
