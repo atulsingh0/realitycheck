@@ -13,9 +13,9 @@ jobs:
     steps:
       - run: echo "Hi I'm on Machine Runners!"
       - run: sleep 5
-      - run: curl ifconfig.me
+      - run: env
       - run: cat /proc/cmdline
-      - run: ps aux
+      - run: ps -ef
       - run: cat /proc/1/cmdline
       - run: sleep 5
 
@@ -27,9 +27,9 @@ jobs:
     steps:
       - run: echo "Hi I'm on Container Runners!"
       - run: sleep 5
-      - run: curl ifconfig.me
+      - run: env
       - run: cat /proc/cmdline
-      - run: ps aux
+      - run: ps -ef
       - run: cat /proc/1/cmdline
       - run: sleep 5
     
