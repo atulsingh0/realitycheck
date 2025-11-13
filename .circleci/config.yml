@@ -1,12 +1,14 @@
 version: 2.1
 
 workflows:
-  build-workflow:
+  runner-jobs:
     jobs:
       - machine-runner
       - container-runner
+
 jobs:
   machine-runner:
+    machine: true
     resource_class: atulsingh0/mrunner
     steps:
       - run: echo "Hi I'm on Machine Runners!"
@@ -22,6 +24,7 @@ jobs:
       - run: cat /proc/1/cmdline
     steps:
       - run: sleep 5
+
 
   container-runner:
     docker:
