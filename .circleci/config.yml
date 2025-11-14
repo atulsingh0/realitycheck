@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 docker_install_test: &docker_install_test
   name: "Testing Docker Installation"
@@ -42,6 +42,21 @@ basic_windows_command: &windows_commands
     docker info
 
 
+commands:
+  check_proxy_variables:
+    steps:
+      - run:
+          name: check proxy env variables
+          command: |
+            echo "PROXY ENV Variables......"
+            echo "HTTP_PROXY --> ${HTTP_PROXY}" 
+            echo "HTTPS_PROXY --> ${HTTPS_PROXY}" 
+            echo "NO_PROXY --> ${NO_PROXY}"
+            echo ""
+            echo "Checking Docker config - "
+            cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
+            echo ""
+
 jobs:
   # windows jobs
   medium_windows:
@@ -49,6 +64,7 @@ jobs:
       image: windows-default    
     resource_class: windows.medium
     steps:
+      - check_proxy_variables
       - run:
           <<: *windows_commands
       - run:
@@ -65,6 +81,7 @@ jobs:
       image: windows-default  
     resource_class: windows.large
     steps:
+      - check_proxy_variables
       - run:
           <<: *windows_commands    
       - run:
