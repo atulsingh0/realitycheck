@@ -6,11 +6,6 @@ docker_install_test: &docker_install_test
     echo "Listing Docker Network"
     docker network ls
     echo ""
-    echo "Inspecting Docker Bridge Network"
-    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
-    echo ""
-    echo "IP address/s"
-    ip route
 
 local_test: &local_test
   name: "Running Commands locally"
@@ -52,9 +47,6 @@ commands:
             echo "HTTP_PROXY --> ${HTTP_PROXY}" 
             echo "HTTPS_PROXY --> ${HTTPS_PROXY}" 
             echo "NO_PROXY --> ${NO_PROXY}"
-            echo ""
-            echo "Checking Docker config - "
-            cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
             echo ""
 
 jobs:
@@ -106,5 +98,5 @@ workflows:
 
   windows_jobs:
     jobs:
-      - medium_windows
-#      - large_windows
+      # - medium_windows
+     - large_windows
