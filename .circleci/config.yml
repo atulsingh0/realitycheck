@@ -64,7 +64,9 @@ jobs:
       image: windows-default    
     resource_class: windows.medium
     steps:
+      - checkout    
       - check_proxy_variables
+      - run: Write-Host 'Hello, Windows'      
       - run:
           <<: *windows_commands
       - run:
