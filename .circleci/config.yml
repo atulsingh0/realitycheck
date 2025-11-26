@@ -308,13 +308,13 @@ jobs:
   contexts:
     <<: *contexts_defaults
     steps:
-      - run: env | grep CONTEXT_END_TO_END_TEST_VAR
+      - run: env | grep ATUL_GLOBAL
       - run: env
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
-      - run: env | grep MULTI_CONTEXT_END_TO_END_VAR
+      - run: env | grep ATUL_LOCAL
       - run: env
 
   write_workspace:
@@ -472,9 +472,9 @@ workflows:
     jobs:
       - save_and_restore_cache
       - contexts:
-          context: org-global
+          context: atul-global
       - multi-contexts:
-          context: individual-local
+          context: atul-local
       - write_workspace
       - read_workspace:
           requires:
