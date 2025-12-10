@@ -308,13 +308,13 @@ jobs:
   contexts:
     <<: *contexts_defaults
     steps:
-      - run: env | grep ATUL_GLOBAL
+      - run: env | grep ATUL_LOCAL
       - run: env
 
   multi-contexts:
     <<: *contexts_defaults
     steps:
-      - run: env | grep ATUL_LOCAL
+      - run: env | grep ATUL_GLOBAL
       - run: env
 
   write_workspace:
