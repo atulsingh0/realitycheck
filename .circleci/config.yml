@@ -70,12 +70,10 @@ commands:
                 name: Verify that job ran with the requested resource_class option
                 command: |
                   echo curl -k \
-                  "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?\
-                  circle-token=$CIRCLE_TOKEN" -o output.json
+                  "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?circle-token=$CIRCLE_TOKEN" -o output.json
                   
                   curl -k \
-                  "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?\
-                  circle-token=$CIRCLE_TOKEN" -o output.json
+                  "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?circle-token=$CIRCLE_TOKEN" -o output.json
 
                   jq output.json | grep <<parameters.resource_class>>
                   jq '.picard.resource_class.class' | grep <<parameters.resource_class>>
