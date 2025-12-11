@@ -472,9 +472,9 @@ workflows:
     jobs:
       - save_and_restore_cache
       - contexts:
-          context: atul-global
-      - multi-contexts:
           context: atul-local
+      - multi-contexts:
+          context: atul-global
       - write_workspace
       - read_workspace:
           requires:
