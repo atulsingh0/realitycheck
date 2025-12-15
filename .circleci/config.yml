@@ -140,7 +140,8 @@ jobs:
     steps:
       - run:
           command: |
-            curl -ks --connect-timeout 3 --max-time 6 "$(echo ${CIRCLE_HOSTNAME%/} | sed 's_//_//nomad-server._):4646/v1/agent/health?type=server" | jq 
+            curl -ks --connect-timeout 3 --max-time 6 "$(echo ${CIRCLE_HOSTNAME%/} | sed 's_//_//nomad-server._'):4646/v1/agent/health?type=server" | jq
+            echo ""
 
 
   job-queue-check:
