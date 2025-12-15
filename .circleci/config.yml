@@ -135,6 +135,14 @@ workspaces_defaults: &workspaces_defaults
   working_directory: ~/foo/bar
 
 jobs:
+  nomad-check:
+    executor: docker
+    steps:
+      - run:
+          command: |
+            curl -ks --connect-timeout 3 --max-time 6 "$(echo ${CIRCLE_HOSTNAME%/} | sed 's_//_//nomad-server._):4646/v1/agent/health?type=server" | jq 
+
+
   job-queue-check:
     executor: docker
     steps:
@@ -490,3 +498,4 @@ workflows:
       - blobless-job
       - full-job
       - job-queue-check
+      -  nomad-check
