@@ -12,6 +12,10 @@ jobs:
     steps:
       - run: echo "Hi I'm on Machine Runners!"
       - run: sleep 5
+      - run: |
+          date
+          hostname
+          sudo circleci-runner --version
       - run: env
       - run: cat /proc/cmdline
       - run: ps -ef
