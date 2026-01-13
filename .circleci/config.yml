@@ -15,7 +15,8 @@ jobs:
       - run: |
           date
           hostname
-          sudo circleci-runner --version
+          circleci-runner --version
+          
       - run: env
       - run: cat /proc/cmdline
       - run: ps -ef
