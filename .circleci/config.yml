@@ -16,6 +16,7 @@ jobs:
           date
           hostname
           circleci-runner --version
+          systemctl status circleci-runner
           
       - run: env
       - run: cat /proc/cmdline
