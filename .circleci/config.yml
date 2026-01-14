@@ -20,6 +20,6 @@ jobs:
           
       - run: env
       - run: cat /proc/cmdline
-      - run: ps -ef
+      - run: ps aux
       - run: cat /proc/1/cmdline
       - run: sleep 5
