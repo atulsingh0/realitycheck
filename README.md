@@ -27,8 +27,8 @@ To install and run reality check on your CircleCI Server installation, follow th
 
 Context Name       | Environment Variable Key Name  | Value   
 -------------------|------------------------------- |-----------------------------
-`org-global`       | `CONTEXT_END_TO_END_TEST_VAR`  | `1`
-`individual-local` | `MULTI_CONTEXT_END_TO_END_VAR` | `1`
+`atul-multi-contexts`       | `ATUL_GLOBAL`  | `1`
+`atul-contexts` | `ATUL_LOCAL` | `1`
 
 ### Example AWS Server Installation
 ```bash
@@ -39,10 +39,10 @@ CIRCLE_CLOUD_PROVIDER=aws
 CIRCLE_WINDOWS_EXECUTOR=true # Optional, only if using a Windowws AMI
 
 # org-global context environment variables
-CONTEXT_END_TO_END_TEST_VAR=1
+ATUL_LOCAL=1
 
 # individual-local context environment variables
-MULTI_CONTEXT_END_TO_END_VAR=1
+ATUL_GLOBAL=1
 ```
 
 ### Example GCP Server Installation
@@ -54,10 +54,10 @@ CIRCLE_CLOUD_PROVIDER=gcp
 CIRCLE_WINDOWS_EXECUTOR=true # Optional, only if using a Windows AMI
 
 # org-global context environment variables
-CONTEXT_END_TO_END_TEST_VAR=1
+ATUL_LOCAL=1
 
 # individual-local context environment variables
-MULTI_CONTEXT_END_TO_END_VAR=1
+ATUL_GLOBAL=1
 ```
 
 ---
