@@ -135,6 +135,20 @@ workspaces_defaults: &workspaces_defaults
   working_directory: ~/foo/bar
 
 jobs:
+  step-rerun:
+    executor: docker
+    steps:
+      - checkout
+      - run:
+          command: |
+            if [ $CIRCLE_RETRY_NUMBER -eq 1 ]; then
+              exit 1;
+            else
+              echo "This is the run count: $CIRCLE_RETRY_NUMBER"
+            fi
+          max_auto_reruns: 3
+          auto_rerun_delay: 15s
+
   nomad-check:
     executor: docker
     steps:
@@ -500,4 +514,5 @@ workflows:
       - blobless-job
       - full-job
       - job-queue-check
+      - step-rerun
       #- nomad-check
