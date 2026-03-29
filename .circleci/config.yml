@@ -146,6 +146,8 @@ jobs:
               echo "this is a fist failure at $(date)" | tee first-run.log
               exit 1
             else
+              date
+              echo "checking the content of first-run.log file -"            
               cat first-run.log
             fi
           max_auto_reruns: 3
