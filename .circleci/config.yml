@@ -140,11 +140,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Forcing Rerun
           command: |
-            if [ $CIRCLE_RETRY_NUMBER -eq 1 ]; then
-              exit 1;
+            if [ ! -f first-run.log ]; then
+              echo "this is a fist failure at $(date)" | tee first-run.log
+              exit 1
             else
-              echo "This is the run count: $CIRCLE_RETRY_NUMBER"
+              cat first-run.log
             fi
           max_auto_reruns: 3
           auto_rerun_delay: 15s
