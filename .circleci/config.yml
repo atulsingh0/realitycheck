@@ -256,6 +256,23 @@ jobs:
   machine:
     machine: true
     steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done
       - check_proxy_variables    
       - run:
           <<: *basic_docker_build
@@ -273,6 +290,23 @@ jobs:
       image: android-default
     steps:
       - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done    
+      - run:
           <<: *basic_docker_build
       - run: |
           echo $SLEEP
@@ -288,6 +322,23 @@ jobs:
       image: arm-default
     resource_class: arm.medium
     steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done    
       - check_proxy_variables    
       - run:
           <<: *basic_docker_build
@@ -303,6 +354,23 @@ jobs:
   remote_docker:
     <<: *remote_docker_defaults
     steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done    
       - run: which docker
       - run: docker -v
       - check_proxy_variables      
@@ -314,6 +382,23 @@ jobs:
   docker_layer_caching:
     <<: *remote_docker_defaults
     steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done    
       - run: which docker
       - run: docker -v
       - check_proxy_variables      
@@ -328,6 +413,23 @@ jobs:
       docker_layer_caching: true
     resource_class: "small"      
     steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            echo ""
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done    
       - run: which docker
       - run: docker -v
       - check_proxy_variables
@@ -415,7 +517,6 @@ jobs:
     working_directory: ~/realitycheck
     steps:
       - checkout
-
       - run:
           name: Creating Dummy Artifacts
           command: |
@@ -473,6 +574,7 @@ jobs:
           name: Check deploy key algo (After checkout)
           command: |
             ls -l ~/.ssh
+            echo ""
             for key in ~/.ssh/id_*.pub; do
               [ -f "$key" ] || continue
               awk '{ print FILENAME": "$1}' "$key"
