@@ -458,6 +458,26 @@ jobs:
           name: Print .git/config
           command: cat .git/config
 
+  check-ssh-keys:
+    executor: docker
+    steps:
+      - run:
+          name: Check deploy key algo (Before checkout)
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done 
+      - checkout    
+      - run:
+          name: Check deploy key algo (After checkout)
+          command: |
+            ls -l ~/.ssh
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done       
+
 workflows:
   docker_resource_class_jobs:
     jobs:
@@ -519,4 +539,5 @@ workflows:
       - full-job
       - job-queue-check
       - step-rerun
+      - check-ssh-keys
       #- nomad-check
