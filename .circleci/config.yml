@@ -71,11 +71,11 @@ commands:
                 command: |
                   # echo curl -k \
                   # "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?circle-token=$CIRCLE_TOKEN" -o output.json
-                  
+
                   curl -k \
                   "${CIRCLE_HOSTNAME%/}/api/v1.1/project/github/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/$CIRCLE_BUILD_NUM?circle-token=$CIRCLE_TOKEN" -o output.json
 
-                  jq '.picard' output.json 
+                  jq '.picard' output.json
                   echo ""
                   jq '.picard' output.json | grep <<parameters.resource_class>>
       - when:
@@ -97,6 +97,16 @@ commands:
                   $job = Invoke-RestMethod -URI "$env:CIRCLE_HOSTNAME/api/v2/project/gh/$env:CIRCLE_PROJECT_USERNAME/$env:CIRCLE_PROJECT_REPONAME/job/$env:CIRCLE_BUILD_NUM" `
                     -Headers @{ "Circle-Token" = "$env:CIRCLE_TOKEN" }
                   $job.executor.resource_class | Select-String -Pattern "<<parameters.resource_class>>"
+
+  check_ssh_algo:
+    steps:
+      - run:
+          name: Check deploy key algo
+          command: |
+            for key in ~/.ssh/id_*.pub; do
+              [ -f "$key" ] || continue
+              awk '{ print FILENAME": "$1}' "$key"
+            done
 
 remote_docker_defaults: &remote_docker_defaults
   docker:
@@ -133,16 +143,6 @@ workspaces_defaults: &workspaces_defaults
         password: $DOCKERHUB_PASSWORD  
   resource_class: "small"
   working_directory: ~/foo/bar
-
-check_ssh_algo: &check_ssh_algo
-steps:
-  - run:
-      name: Check deploy key algo 
-      command: |
-        for key in ~/.ssh/id_*.pub; do
-          [ -f "$key" ] || continue
-          awk '{ print FILENAME": "$1}' "$key"
-        done
 
 jobs:
   step-rerun:
@@ -269,7 +269,7 @@ jobs:
       - check_ssh_algo
       - checkout
       - check_ssh_algo
-      - check_proxy_variables    
+      - check_proxy_variables
       - run:
           <<: *basic_docker_build
       - run: |
