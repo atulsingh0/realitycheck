@@ -103,6 +103,8 @@ commands:
       - run:
           name: Check deploy key algo
           command: |
+            ls -l ~/.ssh 
+            echo ""
             for key in ~/.ssh/id_*.pub; do
               [ -f "$key" ] || continue
               awk '{ print FILENAME": "$1}' "$key"
