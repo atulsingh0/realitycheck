@@ -103,7 +103,7 @@ commands:
       - run:
           name: Check deploy key algo
           command: |
-            ls -l ~/.ssh 
+            ls -l ~/.ssh || true
             echo ""
             for key in ~/.ssh/id_*.pub; do
               [ -f "$key" ] || continue
