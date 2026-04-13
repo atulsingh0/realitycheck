@@ -134,6 +134,16 @@ workspaces_defaults: &workspaces_defaults
   resource_class: "small"
   working_directory: ~/foo/bar
 
+check_ssh_algo: &check_ssh_algo
+steps:
+  - run:
+      name: Check deploy key algo 
+      command: |
+        for key in ~/.ssh/id_*.pub; do
+          [ -f "$key" ] || continue
+          awk '{ print FILENAME": "$1}' "$key"
+        done
+
 jobs:
   step-rerun:
     executor: docker
@@ -256,23 +266,9 @@ jobs:
   machine:
     machine: true
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo
       - check_proxy_variables    
       - run:
           <<: *basic_docker_build
@@ -289,23 +285,9 @@ jobs:
     machine:
       image: android-default
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done    
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo   
       - run:
           <<: *basic_docker_build
       - run: |
@@ -322,23 +304,9 @@ jobs:
       image: arm-default
     resource_class: arm.medium
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done    
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo  
       - check_proxy_variables    
       - run:
           <<: *basic_docker_build
@@ -354,23 +322,9 @@ jobs:
   remote_docker:
     <<: *remote_docker_defaults
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done    
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo    
       - run: which docker
       - run: docker -v
       - check_proxy_variables      
@@ -382,23 +336,9 @@ jobs:
   docker_layer_caching:
     <<: *remote_docker_defaults
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done    
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo    
       - run: which docker
       - run: docker -v
       - check_proxy_variables      
@@ -413,23 +353,9 @@ jobs:
       docker_layer_caching: true
     resource_class: "small"      
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done    
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo    
       - run: which docker
       - run: docker -v
       - check_proxy_variables
@@ -559,26 +485,12 @@ jobs:
           name: Print .git/config
           command: cat .git/config
 
-  check-ssh-keys:
+  check-ssh-algo:
     executor: docker
     steps:
-      - run:
-          name: Check deploy key algo (Before checkout)
-          command: |
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done 
-      - checkout    
-      - run:
-          name: Check deploy key algo (After checkout)
-          command: |
-            ls -l ~/.ssh
-            echo ""
-            for key in ~/.ssh/id_*.pub; do
-              [ -f "$key" ] || continue
-              awk '{ print FILENAME": "$1}' "$key"
-            done       
+      - check_ssh_algo
+      - checkout
+      - check_ssh_algo     
 
 workflows:
   docker_resource_class_jobs:
@@ -641,5 +553,5 @@ workflows:
       - full-job
       - job-queue-check
       - step-rerun
-      - check-ssh-keys
+      - check-ssh-algo
       #- nomad-check
