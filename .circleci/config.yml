@@ -6,7 +6,7 @@ jobs:
     docker:
       - image: cimg/base:current
     steps:
-      - date
+      - run: date
       - jq/install:
           version: jq-1.7
 workflows:
