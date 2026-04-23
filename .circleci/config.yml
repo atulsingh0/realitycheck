@@ -1,7 +1,8 @@
 version: 2.1
 
 remote_docker_defaults: &remote_docker_defaults
-  docker: [{image: 'docker:17.06-git'}]
+  docker:
+    - image: 'cimg/base:current'
 
 include_proxy_env: &include_proxy_env
   name: "Set Proxy Env"
@@ -73,7 +74,7 @@ jobs:
     <<: *remote_docker_defaults
     steps:
       - check_proxy_variables
-      - run: apk update && apk add sudo
+      # - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
       - run: hostname
@@ -88,7 +89,7 @@ jobs:
     <<: *remote_docker_defaults
     steps:
       - check_proxy_variables
-      - run: apk update && apk add sudo    
+      # - run: apk update && apk add sudo    
       - run: which docker
       - run: docker -v
       - run: hostname
