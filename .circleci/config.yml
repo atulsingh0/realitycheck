@@ -32,7 +32,7 @@ jobs:
           echo "Checking Docker config - "
           cat /etc/systemd/system/docker.service.d/http-proxy.conf || echo "docker config does not exists"
           echo ""
-      - run: apk update && apk add sudo
+      # - run: apk update && apk add sudo
       - run: which docker
       - run: docker -v
       - run: hostname
