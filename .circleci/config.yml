@@ -1,7 +1,8 @@
 version: 2.1
 
 remote_docker_defaults: &remote_docker_defaults
-  docker: [{image: 'docker:17.06-git'}]
+  docker:
+    - image: 'cimg/base:current'  
 
 basic_docker_build: &basic_docker_build
   name: "Build a really basic docker image"
