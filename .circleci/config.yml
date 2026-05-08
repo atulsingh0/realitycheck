@@ -15,7 +15,7 @@ jobs:
           command: "echo Hello, World! How are you?"
       - run:
           name: "Installing stress binary"
-          command: sudo apk add stress
+          command: apk add stress
       - run:
           name: "Get the Host/OS details"
           command: "[ -f /etc/os-release ] && cat /etc/os-release"
@@ -33,7 +33,7 @@ jobs:
           command: "ps -ef"
       - run:
           name: "Running a stess load"
-          command: sudo stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m
+          command: stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m
       - run:
           name: "Bye"
           command: echo "Bye Bye $(date)"
