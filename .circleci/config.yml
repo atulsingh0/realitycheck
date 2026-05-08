@@ -17,6 +17,9 @@ jobs:
           name: "Installing stress binary"
           command: apk add stress
       - run:
+          name: "Running a stess load"
+          command: stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m &          
+      - run:
           name: "Get the Host/OS details"
           command: "[ -f /etc/os-release ] && cat /etc/os-release"
       - run:
@@ -31,9 +34,6 @@ jobs:
       - run:
           name: "Get the running processes"
           command: "ps -ef"
-      - run:
-          name: "Running a stess load"
-          command: stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m
       - run:
           name: "Bye"
           command: echo "Bye Bye $(date)"
