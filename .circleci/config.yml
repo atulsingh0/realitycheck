@@ -1,114 +1,44 @@
 version: 2.1
 
-docker_install_test: &docker_install_test
-  name: "Testing Docker Installation"
-  command: |
-    echo "Listing Docker Network"
-    docker network ls
-    echo ""
-    echo "Inspecting Docker Bridge Network"
-    docker inspect $(docker network ls | grep -w bridge | awk '{print $1}')
-    echo ""
-    echo "IP address/s"
-    ip route
-
-local_test: &local_test
-  name: "Running Commands locally"
-  command: |
-    echo $SLEEP
-    date
-    sleep $SLEEP
-    date
-    echo 'Done sleeping.'
-    
-basic_docker_build: &basic_docker_build
-  name: "Build a really basic docker image"
-  command: |
-    hostname
-    dockerfile=Dockerfile
-    echo "FROM busybox" > $dockerfile
-    echo "RUN echo hello" >> $dockerfile
-    
-    docker build -f $dockerfile --tag throwaway:$CIRCLE_BUILD_NUM .
-    docker run --rm throwaway:$CIRCLE_BUILD_NUM
-
-
 jobs:
-
-
-  # linux jobs
-  medium_linux:
-    machine: true
-    resource_class: medium
+  say-hello:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      - image: alpine:latest
+    resource_class: "xlarge"
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - run:
-          <<: *local_test    
-      # - run:
-      #     <<: *include_proxy_env
+          name: "Say hello"
+          command: "echo Hello, World! How are you?"
       - run:
-          <<: *docker_install_test
+          name: "Installing stress binary"
+          command: sudo apk add stress
       - run:
-          <<: *basic_docker_build
-    environment:
-      SLEEP: 1
-  
-  large_linux:
-    machine: true
-    resource_class: large
-    steps:
+          name: "Get the Host/OS details"
+          command: "[ -f /etc/os-release ] && cat /etc/os-release"
       - run:
-          <<: *local_test    
-      # - run:
-      #     <<: *include_proxy_env
+          name: "Print Hostname"
+          command: "hash hostname && hostname"
       - run:
-          <<: *docker_install_test
+          name: "Entrypoint"
+          command: "cat /proc/1/cmdline"
       - run:
-          <<: *basic_docker_build
-    environment:
-      SLEEP: 1
+          name: "I am calling from"
+          command: "wget ipinfo.io && cat index.html && rm index.html || echo 'I am not going to work in Proxy Env'"          
+      - run:
+          name: "Get the running processes"
+          command: "ps -ef"
+      - run:
+          name: "Running a stess load"
+          command: sudo stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m
+      - run:
+          name: "Bye"
+          command: echo "Bye Bye $(date)"
 
-
-  xlarge_linux:
-    machine: true
-    resource_class: xlarge
-    steps:
-      - run:
-          <<: *local_test    
-      # - run:
-      #     <<: *include_proxy_env
-      - run:
-          <<: *docker_install_test
-      - run:
-          <<: *basic_docker_build
-    environment:
-      SLEEP: 1
-
-
-  large2x_linux:
-    machine: true
-    resource_class: 2xlarge
-    steps:
-      - run:
-          <<: *local_test    
-      # - run:
-      #     <<: *include_proxy_env
-      - run:
-          <<: *docker_install_test
-      - run:
-          <<: *basic_docker_build
-    environment:
-      SLEEP: 1
-
-          
-## ========================================================================
-##                WORKFLOW
-## ========================================================================
 workflows:
-  version: 2
-
-  linux_jobs:
+  nomad-docker:
     jobs:
-      - medium_linux
-      - large_linux
-      # - xlarge_linux
-      # - 2xlarge_linux
+      - say-hello
