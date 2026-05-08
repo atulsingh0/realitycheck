@@ -15,7 +15,10 @@ jobs:
           command: "echo Hello, World! How are you?"
       - run:
           name: "Installing stress binary"
-          command: apk add stress
+          command: |
+            echo "http://dl-cdn.alpinelinux.org/alpine/edge/testing/" >> /etc/apk/repositories
+            apk update
+            apk add stress
       - run:
           name: "Running a stess load"
           command: stress -c 2 --vm 4 --vm-bytes 128M --timeout 1m &          
