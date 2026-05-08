@@ -19,7 +19,7 @@ jobs:
             apk add --no-cache stress-ng
       - run:
           name: "Running a stess load"
-          command: stress-ng -c 2 --vm 4 --vm-bytes 128M --timeout 1m &          
+          command: stress-ng -c 2 --vm 4 --vm-bytes 128M --timeout 1m
       - run:
           name: "Get the Host/OS details"
           command: "[ -f /etc/os-release ] && cat /etc/os-release"
