@@ -179,12 +179,13 @@ jobs:
     steps:
      - run:
           command: |
-            echo "Token print 1"
-            echo $CIRCLE_OIDC_TOKEN
-            echo $CIRCLE_OIDC_TOKEN_V2
-            echo "Token print 2"
-            circleci run oidc get --claims '{"aud":"this-is-a-test-custom-circleci-audience"}'
-            echo "Token print 3"         
+            [ -n $CIRCLE_OIDC_TOKEN ] && echo "CIRCLE_OIDC_TOKEN is set" || echo "CIRCLE_OIDC_TOKEN is not set"
+     - run:
+          command: |
+            [ -n $CIRCLE_OIDC_TOKEN_V2 ] && echo "CIRCLE_OIDC_TOKEN_V2 is set" || echo "CIRCLE_OIDC_TOKEN_V2 is not set"
+     - run:
+          command: |
+            circleci run oidc get --claims '{"aud":"this-is-a-test-custom-circleci-audience"}' | tail -c 30
 
 
   job-queue-check:
