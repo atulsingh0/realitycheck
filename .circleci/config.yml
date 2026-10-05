@@ -279,7 +279,8 @@ jobs:
 
   # vm jobs
   machine:
-    machine: true
+    machine: 
+      image: default
     steps:
       - check_ssh_algo
       - checkout
@@ -366,6 +367,7 @@ jobs:
   machine_dlc:
     machine:
       docker_layer_caching: true
+      image: default
     resource_class: "small"      
     steps:
       - check_ssh_algo
