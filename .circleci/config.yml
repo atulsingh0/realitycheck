@@ -509,7 +509,76 @@ jobs:
       - checkout
       - check_ssh_algo     
 
+  create-contexts:
+    executor: docker
+    environment:
+      ORG_CONTEXT_NAME: atul-api-org-context
+      ACCOUNT_CONTEXT_NAME: atul-api-account-context
+      CONTEXT_VAR_NAME: ATUL_API_VAR
+    steps:
+      - run:
+          name: Create org and account contexts, each with an env variable
+          command: |
+            if [ -z "${CIRCLE_HOSTNAME}" -o -z "${CIRCLE_TOKEN}" -o -z "${CONTEXT_ORG_ID}" -o -z "${CONTEXT_ACCOUNT_ID}" ]; then
+              echo "Set CIRCLE_HOSTNAME, CIRCLE_TOKEN, CONTEXT_ORG_ID and CONTEXT_ACCOUNT_ID in project settings."
+              exit 1
+            fi
+            api="${CIRCLE_HOSTNAME%/}/api/v2"
+
+            create_context() {
+              name=$1; owner_id=$2; owner_type=$3
+              context_id=$(curl -fsS -X POST "$api/context" \
+                -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json" \
+                -d "{\"name\":\"$name\",\"owner\":{\"id\":\"$owner_id\",\"type\":\"$owner_type\"}}" | jq -r '.id')
+              echo "Created $owner_type context $name ($context_id)"
+              curl -fsS -X PUT "$api/context/$context_id/environment-variable/$CONTEXT_VAR_NAME" \
+                -H "Circle-Token: $CIRCLE_TOKEN" -H "Content-Type: application/json" \
+                -d "{\"value\":\"$name-$CIRCLE_BUILD_NUM\"}"
+              echo ""
+            }
+
+            create_context "$ORG_CONTEXT_NAME" "$CONTEXT_ORG_ID" organization
+            create_context "$ACCOUNT_CONTEXT_NAME" "$CONTEXT_ACCOUNT_ID" account
+
+  delete-contexts:
+    executor: docker
+    environment:
+      ORG_CONTEXT_NAME: atul-api-org-context
+      ACCOUNT_CONTEXT_NAME: atul-api-account-context
+    steps:
+      - run:
+          name: Delete the org and account contexts created by create-contexts
+          command: |
+            if [ -z "${CIRCLE_HOSTNAME}" -o -z "${CIRCLE_TOKEN}" -o -z "${CONTEXT_ORG_ID}" -o -z "${CONTEXT_ACCOUNT_ID}" ]; then
+              echo "Set CIRCLE_HOSTNAME, CIRCLE_TOKEN, CONTEXT_ORG_ID and CONTEXT_ACCOUNT_ID in project settings."
+              exit 1
+            fi
+            api="${CIRCLE_HOSTNAME%/}/api/v2"
+
+            delete_context() {
+              name=$1; owner_id=$2; owner_type=$3
+              context_id=$(curl -fsS -G "$api/context" -H "Circle-Token: $CIRCLE_TOKEN" \
+                --data-urlencode "owner-id=$owner_id" --data-urlencode "owner-type=$owner_type" \
+                | jq -r --arg name "$name" '.items[] | select(.name == $name) | .id')
+              if [ -z "$context_id" ]; then
+                echo "No $owner_type context named $name, skipping"
+                return
+              fi
+              curl -fsS -X DELETE "$api/context/$context_id" -H "Circle-Token: $CIRCLE_TOKEN"
+              echo "Deleted $owner_type context $name ($context_id)"
+            }
+
+            delete_context "$ORG_CONTEXT_NAME" "$CONTEXT_ORG_ID" organization
+            delete_context "$ACCOUNT_CONTEXT_NAME" "$CONTEXT_ACCOUNT_ID" account
+
 workflows:
+  context_api_jobs:
+    jobs:
+      - create-contexts
+      - delete-contexts:
+          requires:
+            - create-contexts
+
   docker_resource_class_jobs:
     jobs:
       - executor_resource_class:
